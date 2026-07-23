@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Direct to Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --blue-300:#7EC8E3;--blue-400:#5AACCF;--blue-500:#3A90BB;--blue-700:#1A4F7A;--blue-50:#F0FBFF;--blue-100:#D6F2FC;--blue-200:#ADE5F9;
+  --lav-50:#F9F5FF;--lav-100:#EDE8FF;--lav-200:#D4CAFF;--lav-500:#7E68F0;--lav-600:#6249D6;
+  --blush-100:#FFE4ED;--blush-200:#FFB3C6;--blush-500:#E84878;--blush-50:#FFF5F9;
+  --mint-100:#C8FFE8;--mint-400:#4ECFA0;--mint-500:#2EB888;--mint-50:#F0FFF8;
+  --peach:#FFB17A;--amber:#F6A700;
+  --t-head:#2D3748;--t-body:#4A5568;--t-muted:#718096;
+  --card:#FFFFFF;--shadow:0 4px 20px rgba(126,200,227,0.18);--radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Prompt','Nunito',sans-serif;background:var(--lav-50);color:var(--t-body);line-height:1.5;padding-bottom:50px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+header{background:linear-gradient(110deg,#3A90BB 0%,#5AACCF 22%,#7EC8E3 40%,#9B8AF0 62%,#FF9E54 84%,#F6841F 100%);color:#fff;padding:26px 0 22px;box-shadow:var(--shadow)}
+header .wrap{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+header h1{font-size:27px;font-weight:700;letter-spacing:-.5px}
+header .sub{font-size:13.5px;opacity:.92;margin-top:4px;max-width:660px}
+.pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);padding:7px 16px;border-radius:999px;font-size:13px;font-weight:600}
+.shell{max-width:1440px;margin:0 auto;padding:0 20px;display:flex;gap:22px;align-items:flex-start}
+.side{position:sticky;top:14px;flex:0 0 216px;width:216px;margin-top:22px;padding:14px 12px 16px;z-index:30;background:linear-gradient(170deg,#3A90BB 0%,#1A4F7A 100%);border-radius:16px;box-shadow:0 6px 20px rgba(26,79,122,.25);color:rgba(255,255,255,.85)}
+.main{flex:1;min-width:0}
+.sidehead{padding:2px 2px 12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.22)}
+.sidehead h1{font-size:16px;font-weight:700;color:#fff;line-height:1.3;letter-spacing:-.2px}
+.sidehead .upd{display:inline-block;margin-top:8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.92);background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:3px 8px;border-radius:999px}
+.tabs{display:flex;flex-direction:column;gap:5px}
+.tab{width:100%;text-align:left;border:1.5px solid transparent;background:rgba(255,255,255,.10);color:rgba(255,255,255,.92);padding:9px 12px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.tab:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.32)}
+.tab.on{background:#fff;color:var(--blue-700);font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.filterbar{display:flex;flex-direction:column;align-items:stretch;gap:7px;font-size:12.5px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.22)}
+.frow{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.8)}
+.frow select{flex:1;min-width:0}
+.qrow{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.filterbar .flab{font-weight:600;color:rgba(255,255,255,.72)}
+.filterbar select{font-family:inherit;font-size:12px;font-weight:600;color:var(--blue-700);border:1.5px solid rgba(255,255,255,.35);border-radius:8px;padding:5px 7px;background:rgba(255,255,255,.95);cursor:pointer}
+.qbtn{border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;padding:5px 8px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.qbtn:hover{background:rgba(255,255,255,.26)}
+.filterbar.hide{display:none!important}
+.shell{overflow-x:auto}
+.note{background:var(--blush-50);border-left:4px solid var(--blush-200);border-radius:12px;padding:11px 16px;margin:18px 0;font-size:13px}
+.note b{color:var(--blush-500)}
+.note.amber{background:#FFFaf0;border-left-color:var(--amber)}.note.amber b{color:#9a6b00}
+section.page{display:none;margin-top:22px;animation:fade .3s ease}
+section.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ptitle{font-size:20px;font-weight:700;color:var(--t-head);margin-bottom:3px}
+.pdesc{font-size:13px;color:var(--t-muted);margin-bottom:16px}
+.grid{display:grid;gap:18px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid #eef0f4;padding:20px 22px}
+.kpi .lab{font-size:12px;font-weight:600;color:var(--t-muted)}
+.kpi .val{font-size:28px;font-weight:800;color:var(--t-head);font-family:'Nunito';margin:6px 0 2px;letter-spacing:-1px}
+.kpi .sub{font-size:12px;color:var(--t-muted)}
+.kpi .sub.up{color:var(--mint-500);font-weight:700}.kpi .sub.dn{color:var(--blush-500);font-weight:700}
+.kpi.hl{background:linear-gradient(160deg,#F0FFF8,#FFFFFF)}
+.kpi.hl2{background:linear-gradient(160deg,#F9F5FF,#FFFFFF)}
+.kpi.hl3{background:linear-gradient(160deg,#FFF5F9,#FFFFFF)}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;margin-left:5px;vertical-align:middle}
+.tag.mint{background:var(--mint-100);color:var(--mint-500)}.tag.amber{background:#FFF1CC;color:#9a6b00}.tag.lav{background:var(--lav-100);color:var(--lav-600)}.tag.blush{background:var(--blush-100);color:var(--blush-500)}
+.chartbox{position:relative;height:330px}
+.chartbox.sm{height:270px}
+.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:1.45fr 1fr}
+@media(max-width:860px){.two,.three{grid-template-columns:1fr}}
+.card h3{font-size:16px;font-weight:600;color:var(--t-head);margin-bottom:3px}
+.card .desc{font-size:12.5px;color:var(--t-muted);margin-bottom:14px}
+.funnel{display:flex;flex-direction:column;gap:7px}
+.fstage{display:flex;align-items:center;gap:12px}
+.fbar-wrap{flex:1;background:#f1f3f7;border-radius:10px;overflow:hidden;height:42px}
+.fbar{height:100%;border-radius:10px;display:flex;align-items:center;padding-left:14px;color:#fff;font-weight:700;font-size:14px;white-space:nowrap;transition:width .9s cubic-bezier(.34,1.56,.64,1)}
+.flabel{width:150px;font-size:13px;font-weight:600;color:var(--t-head);text-align:right;flex-shrink:0}
+.fmeta{width:115px;font-size:11.5px;color:var(--t-muted);flex-shrink:0}
+.pending{font-style:italic;color:var(--t-muted)!important;background:repeating-linear-gradient(45deg,#e7eaf0,#e7eaf0 8px,#eff1f6 8px,#eff1f6 16px)!important}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--t-muted);margin-top:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.gauge-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.gauge{position:relative;width:190px;height:190px;flex-shrink:0}
+.gauge .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .center .pct{font-size:32px;font-weight:800;font-family:'Nunito';color:var(--t-head)}
+.gauge .center .cap{font-size:11px;color:var(--t-muted)}
+.gnote{flex:1;min-width:200px}
+.gnote .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #e5e8ef;font-size:13.5px}
+.gnote .row b{font-weight:700;color:var(--t-head)}
+.barlist{display:flex;flex-direction:column;gap:9px}
+.barlist .r{display:grid;grid-template-columns:135px 1fr 70px;align-items:center;gap:10px;font-size:12.5px}
+.barlist .r .nm{color:var(--t-head);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.barlist .track{background:#f1f3f7;border-radius:7px;height:18px;overflow:hidden}
+.barlist .fill{height:100%;border-radius:7px}
+.barlist .vn{text-align:right;font-weight:700;color:var(--t-body)}
+#dsProdListHT .r{grid-template-columns:128px 1fr 108px}#dsProdListHT .vn{font-size:12px}
+.tac-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tac{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid #eef0f4;padding:16px 18px}
+.tac h4{font-size:13px;font-weight:700;color:var(--lav-600);margin-bottom:9px}
+.tac ul{list-style:none;font-size:12.5px}
+.tac li{padding:4px 0 4px 18px;position:relative}
+.tac li:before{content:"›";position:absolute;left:2px;color:var(--blue-400);font-weight:800}
+.btable{width:100%;border-collapse:collapse;font-size:12.5px}
+.btable th{text-align:left;color:var(--t-muted);font-weight:700;font-size:11.5px;padding:8px 10px;border-bottom:2px solid #eef0f4;white-space:nowrap}
+.btable td{padding:9px 10px;border-bottom:1px solid #f1f3f7;color:var(--t-body)}
+.btable th.num,.btable td.num{text-align:right}
+.btable tr.sel{background:var(--blush-50)}
+.btable td.pname{font-weight:600;color:var(--t-head)}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.chip.o{background:var(--blue-100);color:var(--blue-700)}.chip.c{background:var(--mint-100);color:var(--mint-500)}
+/* brand logo lockup */
+.brandlock{display:inline-flex;align-items:center;gap:13px;background:rgba(255,255,255,.96);padding:9px 18px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.wm{font-family:'Nunito',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.5px;display:inline-flex;align-items:center;line-height:1}
+.wm.bebe{color:#3A90BB}
+.wm.bebe .pl{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:#1E9BD7;margin:0 1px;position:relative;top:1px}
+.wm.bebe .pl:after{content:"";border-style:solid;border-width:4px 0 4px 6px;border-color:transparent transparent transparent #fff;margin-left:1px}
+.wm.host{color:#F6841F;font-size:21px}
+.wm.host .pw{font-size:15px;margin-right:3px}
+.brandx{color:#cbd5e1;font-weight:700;font-size:18px;font-family:'Prompt'}
+@media(max-width:680px){.brandlock{display:none}}
+footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="sidehead">
+      <h1>Direct Sale to Service</h1>
+      <span class="upd">🕒 อัปเดตล่าสุด ณ วันที่ 20/07/2026</span>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="filterbar" id="filterbar">
+      <span class="flab">ช่วงเวลา</span>
+      <div class="frow"><select id="fromSel"></select><span>ถึง</span><select id="toSel"></select></div>
+      <div class="qrow">
+        <button class="qbtn" onclick="qy('2024')">2024</button>
+        <button class="qbtn" onclick="qy('2025')">2025</button>
+        <button class="qbtn" onclick="qy('2026')">2026</button>
+        <button class="qbtn" onclick="qyAll()">ทั้งหมด</button>
+      </div>
+    </div>
+  </aside>
+  <main class="main">
+
+  <!-- 1 OVERVIEW -->
+  <section class="page on" data-tab="overview">
+    <div class="ptitle">ภาพรวมทุกบริการ</div>
+    <div class="pdesc">Direct Sale (LINE OA 2 แบรนด์) · ยอดบริการติดตั้งปูพื้น · การเติบโตสมาชิก — ปรับช่วงเวลาได้จากด้านบน</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl2"><div class="lab">Direct Sale (ช่วงที่เลือก) <span class="tag lav">LINE OA</span></div><div class="val" id="ov-ds">฿779K</div><div class="sub" id="ov-ds-sub">Bebeplay + Hosttail ปูพื้น</div></div>
+      <div class="card kpi hl"><div class="lab">บริการปูพื้น (ช่วงที่เลือก) <span class="tag mint">LDS</span></div><div class="val" id="ov-svc">฿913K</div><div class="sub" id="ov-svc-sub">ยอดติดตั้งทุกช่องทาง</div></div>
+      <div class="card kpi hl3"><div class="lab">สมาชิก Choco ทั้งหมด</div><div class="val" id="ov-memtot">3,097</div><div class="sub" id="ov-memtot-sub">ตั้งแต่ ม.ค. 2024</div></div>
+      <div class="card kpi"><div class="lab">สมาชิกเพิ่ม (ช่วงที่เลือก)</div><div class="val" id="ov-mem">—</div><div class="sub" id="ov-mem-sub">จากช่องวันที่สมัคร</div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>Direct Sale &amp; บริการปูพื้น รายเดือน <span id="ov-sum" style="font-size:13px;color:var(--lav-600);font-weight:700"></span></h3>
+      <div class="desc">Direct Sale = ยอด LINE OA 2 แบรนด์ · บริการปูพื้น = ติดตั้งทุกช่องทาง (เส้นประ = เป้า 300K) · มี 2026</div>
+      <div class="chartbox"><canvas id="comboChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>การเติบโตสมาชิก Choco</h3>
+      <div class="desc">สมาชิกใหม่/เดือน (แท่ง) + สะสม (เส้น) — ช่วงที่เลือก</div>
+      <div class="chartbox"><canvas id="ovMemChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 2 MEMBERS CHOCO -->
+  <section class="page" data-tab="memberschoco">
+    <div class="ptitle">สมาชิก Choco (ตั้งแต่ปี 2024)</div>
+    <div class="pdesc">จากช่อง "วันที่เริ่มเป็นสมาชิก" · ปรับช่วงเวลาด้านบน + กรองตามสินค้าที่สนใจได้</div>
+    <div style="margin-bottom:16px;font-size:13px"><span style="color:var(--t-muted);font-weight:600">กรองสินค้าที่สนใจ:</span> <select id="memIntSel" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--lav-600);border:1.5px solid var(--lav-200);border-radius:8px;padding:5px 9px;background:#fff;cursor:pointer"></select> <span id="memIntNote" style="color:var(--t-muted);font-size:12px"></span></div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl3"><div class="lab">สมาชิกทั้งหมด (สะสม)</div><div class="val" id="m-total">3,097</div><div class="sub" id="m-total-sub">ม.ค. 2024 – ก.ค. 2026</div></div>
+      <div class="card kpi"><div class="lab">เพิ่มในช่วงที่เลือก</div><div class="val" id="m-add">—</div><div class="sub" id="m-range">—</div></div>
+      <div class="card kpi"><div class="lab">เฉลี่ยเพิ่ม/เดือน</div><div class="val" id="m-avg">—</div><div class="sub">สมาชิกใหม่ต่อเดือน</div></div>
+      <div class="card kpi"><div class="lab">เฉลี่ยเติบโต %/เดือน</div><div class="val" id="m-grow">—</div><div class="sub">MoM ของยอดสะสม</div></div>
+    </div>
+    <div class="grid three" style="margin-bottom:18px">
+      <div class="card">
+        <h3>สมาชิกใหม่/เดือน &amp; ยอดสะสม</h3>
+        <div class="desc">แท่ง = สมาชิกใหม่ · เส้น = สะสม</div>
+        <div class="chartbox"><canvas id="memChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>รายเดือน <span id="memYr">ปี 2026</span></h3>
+        <div class="desc">จำนวนสมาชิกใหม่แต่ละเดือน · ตามช่วงที่เลือก</div>
+        <div class="gnote" id="memMonthList" style="max-height:300px;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="grid two" style="margin-bottom:18px">
+      <div class="card"><h3>สินค้าที่สนใจ (Segment)</h3><div class="desc">จำนวนสมาชิกที่สนใจแต่ละหมวด</div><div class="barlist" id="memInterest"></div></div>
+      <div class="card"><h3>ยอดใช้จ่ายมาจากสินค้าอะไร</h3><div class="desc">ยอดใช้จ่ายสะสมแยกตามสินค้าที่สนใจ</div><div class="barlist" id="memSpend"></div></div>
+    </div>
+    <div class="grid three">
+      <div class="card"><h3>ช่องทางที่รู้จัก/เคยซื้อ</h3><div class="desc">ที่มาของสมาชิก</div><div class="chartbox sm"><canvas id="memChan"></canvas></div></div>
+      <div class="card"><h3>จังหวัด Top</h3><div class="desc">เฉพาะที่มีข้อมูลที่อยู่</div><div class="barlist" id="memProv"></div></div>
+    </div>
+    <div style="margin:24px 0 4px;font-weight:800;font-size:17px;color:var(--t-head)">🛡️ การลงทะเบียนรับประกันสินค้า</div>
+    <div class="pdesc">ยอดคนที่กรอกฟอร์มลงทะเบียนรับประกัน (จาก Google Form ระบบสะสมแต้ม) · ตั้งแต่ มิ.ย. 2025 · ตามช่วงเวลาที่เลือกด้านบน</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl3"><div class="lab">ลงทะเบียนรับประกันทั้งหมด</div><div class="val" id="w-total">—</div><div class="sub">ตั้งแต่ มิ.ย. 2025 ถึงปัจจุบัน</div></div>
+      <div class="card kpi"><div class="lab">ช่วงที่เลือก</div><div class="val" id="w-add">—</div><div class="sub" id="w-range">—</div></div>
+      <div class="card kpi"><div class="lab">เฉลี่ย/เดือน</div><div class="val" id="w-avg">—</div><div class="sub">ในช่วงที่เลือก</div></div>
+    </div>
+    <div class="grid three">
+      <div class="card"><h3>ลงทะเบียนรับประกัน/เดือน &amp; สะสม</h3><div class="desc">แท่ง = ราย/เดือน · เส้น = สะสม · ตามช่วงที่เลือก</div><div class="chartbox"><canvas id="warrChart"></canvas></div></div>
+      <div class="card"><h3>รับประกันรายเดือน <span id="warrYr"></span></h3><div class="desc">จำนวนที่ลงทะเบียนแต่ละเดือน · ตามช่วงที่เลือก</div><div class="gnote" id="warrMonthList" style="max-height:300px;overflow:auto"></div></div>
+    </div>
+  </section>
+
+  <!-- 3 DIRECT SALE -->
+  <section class="page" data-tab="directsale">
+    <div class="ptitle">Direct Sale · ยอดผ่าน LINE OA</div>
+    <div class="pdesc">Bebeplay (ยอด LOA ทั้งหมด จาก Pivot) + Hosttail (เฉพาะปูพื้นผ่าน LOA_hosttail) · 2026</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl2"><div class="lab">Direct Sale (ช่วงที่เลือก)</div><div class="val" id="ds-tot">฿779K</div><div class="sub">รวม LINE OA 2 แบรนด์</div></div>
+      <div class="card kpi"><div class="lab">Bebeplay LOA</div><div class="val" id="ds-bebe">฿496K</div><div class="sub">ทุกหมวดผ่าน LINE OA</div></div>
+      <div class="card kpi"><div class="lab">Hosttail ปูพื้น LOA</div><div class="val" id="ds-host">฿283K</div><div class="sub">งานปูพื้นผ่าน LINE OA</div></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1.3fr 1fr 1fr;gap:18px;margin-bottom:18px">
+      <div class="card"><h3>Direct Sale รายเดือน แยกแบรนด์</h3><div class="desc">Bebeplay LOA (ฟ้า) + Hosttail ปูพื้น LOA (ส้ม)</div><div class="chartbox" style="height:260px"><canvas id="dsChart"></canvas></div></div>
+      <div class="card"><h3>สัดส่วนตามแบรนด์ (ช่วงที่เลือก)</h3><div class="desc">Bebeplay (ฟ้า) vs Hosttail ปูพื้น (ส้ม)</div><div class="chartbox" style="height:260px"><canvas id="dsBrandChart"></canvas></div></div>
+      <div class="card"><h3>Direct Sale มาจากปูพื้น vs สินค้าอื่น</h3><div class="desc" id="dsMixDesc">ยอด LINE OA ที่เป็นงานปูพื้น เทียบกับสินค้าอื่นๆ</div><div class="chartbox" style="height:260px"><canvas id="dsMixChart"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>สรุป Direct Sale รายเดือน</h3>
+      <div class="desc">ช่องทาง × เดือน · เลื่อนซ้าย-ขวาดูแต่ละเดือน</div>
+      <div id="dsMonthList" style="overflow:auto"></div>
+    </div>
+    <div class="grid two" style="align-items:start">
+      <div class="card">
+        <h3>สินค้าขายดีผ่าน LINE OA (จำนวนชิ้น · สะสม)</h3>
+        <div class="desc">รวมทั้งช่วงปี 2026 · ช่องทาง LOA_bebeplay + LOA_hosttail · เรียงตามจำนวนชิ้น (ตัวเลขในวงเล็บ = จำนวนออเดอร์) · *ยอดเงินรายสินค้าแยกไม่ได้เพราะออเดอร์รวมหลายชิ้นในบิลเดียว</div>
+        <div class="barlist" id="dsProdList"></div>
+      </div>
+      <div class="card">
+        <h3 style="color:#E8730C">🐾 ยอดขายสินค้าผ่าน LOA_Hosttail (ประมาณการ · สะสม)</h3>
+        <div class="desc">เฉพาะช่องทาง LINE OA Hosttail · เผื่อแพลนยิงสินค้านอกเหนือบริการปูพื้น — สินค้าอะไรขายดี ยอดเท่าไหร่ (76 รายการ · 131 ออเดอร์ · Top 12 · ตัวเลขในวงเล็บ = จำนวนชิ้น) · *ยอด ฿ ประมาณจากราคาต่อชิ้น × จำนวน</div>
+        <div class="barlist" id="dsProdListHT"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h3>สรุป LOA_Hosttail รายเดือน</h3>
+      <div class="desc">ช่องทาง × เดือน · เลื่อนซ้าย-ขวาดูแต่ละเดือน</div>
+      <div class="gnote" id="dsHTMonthList" style="overflow:auto"></div>
+    </div>
+  </section>
+
+  <!-- 4 บริการปูพื้น -->
+  <section class="page" data-tab="target">
+    <div class="ptitle">บริการปูพื้น (LDS + มัดจำ Event SER)</div>
+    <div class="pdesc">แยกแบรนด์ Bebeplay (ฟ้า) / Hosttail (ส้ม) และช่องทางสั่งซื้อ · เป้า 300K/เดือน · ปรับช่วงเวลาได้ · รวมยอดมัดจำงาน Event (รหัส SER) แล้ว</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl"><div class="lab">ยอดบริการรวม (ช่วงที่เลือก)</div><div class="val" id="sv-tot">—</div><div class="sub">ทุกช่องทาง รวมมัดจำ Event</div></div>
+      <div class="card kpi"><div class="lab">Hosttail <span class="tag" style="background:#FFE9D6;color:#b5590a">ปูพื้นสัตว์</span></div><div class="val" id="sv-host" style="color:#E8730C">—</div><div class="sub" id="sv-host-sub">FB + LINE OA</div></div>
+      <div class="card kpi"><div class="lab">Bebeplay <span class="tag" style="background:#D6F2FC;color:#1A4F7A">ปูพื้นเด็ก</span></div><div class="val" id="sv-bebe" style="color:#3A90BB">—</div><div class="sub" id="sv-bebe-sub">FB + LINE OA</div></div>
+      <div class="card kpi"><div class="lab">เทียบเป้า (เดือนเต็มล่าสุด)</div><div class="val" id="g-pct2">—</div><div class="sub" id="g-desc2">—</div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>ยอดบริการแยกแบรนด์ × ช่องทาง รายเดือน <span id="sv-sum" style="font-size:13px;color:var(--mint-500);font-weight:700"></span></h3>
+      <div class="desc">Hosttail = ส้ม · Bebeplay = ฟ้า · <b>เฉดอ่อน = LINE OA · เฉดเข้ม = FB</b> · Event = ม่วง — เส้นประ = เป้า 300K · ตัวเลขเหนือแท่ง = รวมเดือน · <b>▲▼ % = เทียบเดือนก่อนหน้า</b></div>
+      <div class="chartbox"><canvas id="brandMonthChart"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>สรุปยอดปูพื้นรายเดือน</h3>
+      <div class="desc">ช่องทาง × เดือน · เลื่อนซ้าย-ขวาดูแต่ละเดือน</div>
+      <div id="svMonthList" style="overflow:auto"></div>
+    </div>
+    <div class="grid two">
+      <div class="card"><h3>สัดส่วนแบรนด์ (ช่วงที่เลือก)</h3><div class="desc">Hosttail (ส้ม) vs Bebeplay (ฟ้า) vs Event (ม่วง)</div><div class="chartbox"><canvas id="svBrandPie"></canvas></div></div>
+      <div class="card">
+        <h3>เป้า 300K — เดือนเต็มล่าสุด</h3><div class="desc" id="g-desc">—</div>
+        <div class="gauge-wrap">
+          <div class="gauge"><canvas id="gauge" width="190" height="190"></canvas><div class="center"><div class="pct" id="g-pct">—</div><div class="cap">ของเป้า 300K</div></div></div>
+          <div class="gnote" id="g-note"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- บริการติดตั้ง (Planner) -->
+  <section class="page" data-tab="install">
+    <div class="ptitle">บริการติดตั้ง (Planner)</div>
+    <div class="pdesc">งานติดตั้งที่ทีมบันทึกผ่าน Microsoft Planner (Sale/CS/คลัง/พี่เต้ย) — รวม <b>บริการปูพื้น 2 แบรนด์</b> + <b>Install Service</b> (ประกอบเตียง/ที่กั้น) · Label มี "พื้น" = ปูพื้น, ไม่มี "พื้น" = Install Service · เลขบิล = เลข 6 ตัวแรกของชื่องาน (ผูกยอดจากไฟล์ Direct Sale)</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl"><div class="lab">งานติดตั้งทั้งหมด <span class="tag lav">Planner</span></div><div class="val">103</div><div class="sub">ทุกประเภท ทุกขั้นตอน</div></div>
+      <div class="card kpi"><div class="lab">บริการปูพื้น (Hosttail+Bebeplay)</div><div class="val" style="color:#E8730C">65</div><div class="sub">Hosttail 50 · Bebeplay 15</div></div>
+      <div class="card kpi"><div class="lab">Install Service (ประกอบทั่วไป)</div><div class="val" style="color:#64748B">38</div><div class="sub">เตียง/ที่กั้น — impact น้อยกว่าปูพื้น</div></div>
+      <div class="card kpi"><div class="lab">ปิดงานติดตั้งแล้ว (Bucket)</div><div class="val" style="color:#2EB888">60</div><div class="sub">อยู่ขั้น "ปิดงานติดตั้ง"</div></div>
+    </div>
+    <div class="grid two" style="margin-bottom:18px">
+      <div class="card"><h3>งานแยกประเภท</h3><div class="desc">ปูพื้น Hosttail (ส้ม) · ปูพื้น Bebeplay (ฟ้า) · Install Service (เทา)</div><div class="chartbox"><canvas id="instCatChart"></canvas></div></div>
+      <div class="card"><h3>งานแยกตามขั้นตอน (Bucket)</h3><div class="desc">สถานะงานในกระบวนการ Planner</div><div class="barlist" id="instBucketList"></div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>ยอดขายผูกจากเลขบิล (จากไฟล์ Direct Sale)</h3>
+      <div class="desc">ผูกเลขบิลได้ 56 จาก 103 งาน — ยอดด้านล่างเป็นเฉพาะบิลที่จับคู่ได้ (ตัวเลขในวงเล็บ = จำนวนบิลที่ผูกได้)</div>
+      <div class="grid kpis">
+        <div class="card kpi" style="background:#FFF6EE"><div class="lab">ปูพื้น Hosttail</div><div class="val" style="color:#E8730C;font-size:24px">฿629,780</div><div class="sub">21 บิล (จาก 50 งาน)</div></div>
+        <div class="card kpi" style="background:#F0FBFF"><div class="lab">ปูพื้น Bebeplay</div><div class="val" style="color:#3A90BB;font-size:24px">฿318,800</div><div class="sub">12 บิล (จาก 15 งาน)</div></div>
+        <div class="card kpi" style="background:#F4F6F9"><div class="lab">Install Service</div><div class="val" style="color:#64748B;font-size:24px">฿215,136</div><div class="sub">23 บิล (จาก 38 งาน)</div></div>
+      </div>
+    </div>
+    <div class="grid three" style="margin-bottom:18px">
+      <div class="card">
+        <h3>Install Service (ปิดงานแล้ว) — ยอดรายเดือน</h3>
+        <div class="desc">เฉพาะ Install Service (ไม่ใช่ปูพื้น) · Bucket "ปิดงานติดตั้ง" · ตัดลูกค้าประกอบเองออก · ยอดสุทธิจาก JST (กระทบครบทุกช่องทาง · ไฟล์ Service บริการติดตั้ง 2)</div>
+        <div class="chartbox"><canvas id="instSvcChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>ยอดรายเดือน (Install ปิดงาน)</h3>
+        <div class="desc">ยอด ฿ + จำนวนงานต่อเดือน</div>
+        <div class="gnote" id="instSvcMonthList" style="max-height:300px;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <h3 style="margin:0">ตารางงานติดตั้ง (เลขบิล · สถานะ · ยอด)</h3>
+        <div style="font-size:12.5px"><span style="color:var(--t-muted);font-weight:600">กรอง:</span> <select id="instSel" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--lav-600);border:1.5px solid var(--lav-200);border-radius:8px;padding:5px 9px;background:#fff;cursor:pointer"></select></div>
+      </div>
+      <div class="desc">เลขบิล (6 ตัวแรก) · สินค้า · ประเภท · ขั้นตอน · สถานะ · ยอด (จากไฟล์ยอดขาย)</div>
+      <div id="instTable" style="max-height:420px;overflow:auto"></div>
+    </div>
+    <div class="note"><b>หมายเหตุ:</b> ผูกเลขบิลกับไฟล์ Direct Sale ได้ 56/103 (บางบิลยังไม่อยู่ในไฟล์ยอดขาย/คนละช่วง) · "ลูกค้าประกอบเอง" (3 งาน) เก็บไว้ดูเฉยๆ ไม่ต้องดำเนินการ · ยอดเงินคือมูลค่าทั้งบิล (อาจรวมสินค้าอื่นในบิล)</div>
+  </section>
+
+  <!-- Plan คนท้อง -->
+  <section class="page" data-tab="preg">
+    <div class="ptitle">Plan คนท้อง</div>
+    <div class="pdesc">สมาชิกที่กรอกฟอร์มคนท้อง — แยกตาม "สถานพยาบาลที่ท่านคลอดบุตร" (จากไฟล์สมาชิก Choco ปี 2026)</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl3"><div class="lab">สมาชิก Plan คนท้อง</div><div class="val">334</div><div class="sub">กรอกสถานพยาบาลที่คลอด</div></div>
+      <div class="card kpi"><div class="lab">ระบุชื่อโรงพยาบาล</div><div class="val">57</div><div class="sub">พญาไท · สมิติเวช · เปาโล</div></div>
+      <div class="card kpi"><div class="lab">เลือก "โรงพยาบาลอื่น ๆ"</div><div class="val">277</div><div class="sub">83% — ยังไม่ระบุชื่อ</div></div>
+    </div>
+    <div class="grid two" style="margin-bottom:18px">
+      <div class="card"><h3>สัดส่วนตามสถานพยาบาล</h3><div class="desc">ที่คลอดบุตร</div><div class="chartbox"><canvas id="pregChart"></canvas></div></div>
+      <div class="card"><h3>จำนวนแยกโรงพยาบาล</h3><div class="desc">เฉพาะที่ระบุชื่อ + อื่นๆ</div><div class="barlist" id="pregList"></div></div>
+    </div>
+    <div class="grid three">
+      <div class="card">
+        <h3>เริ่มเป็นสมาชิก (วันที่กรอกฟอร์ม) รายเดือน</h3>
+        <div class="desc">รวมเดือนละกี่คน — แท่งคือจำนวนคนที่กรอก Plan คนท้องในเดือนนั้น</div>
+        <div class="chartbox"><canvas id="pregMonthChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>รายวันที่กรอกเข้ามา</h3>
+        <div class="desc">จำนวนคนต่อวัน</div>
+        <div class="gnote" id="pregDayList" style="max-height:330px;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="note"><b>หมายเหตุ:</b> ฟอร์มคนท้องเริ่มเก็บปี 2026 · 83% เลือก "โรงพยาบาลอื่น ๆ" (ฟอร์มมีตัวเลือก รพ. ให้กดไม่กี่อัน) — ถ้าเพิ่มตัวเลือกโรงพยาบาลในฟอร์ม จะเห็นชื่อ รพ. จริงของอีก 277 คนนี้</div>
+  </section>
+
+  <!-- 6 FUNNEL -->
+  <section class="page" data-tab="funnel">
+    <div class="ptitle">Funnel การติดตามรายสัปดาห์</div>
+    <div class="pdesc">Broadcast → ปิดการขาย · ขั้นบน = จริง, ขั้นกลางรอเก็บ, ขั้นล่าง = งานบริการจริง</div>
+    <div class="card" style="margin-bottom:18px">
+      <div class="funnel" id="funnel"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--blue-300)"></i> ข้อมูลจริง</span>
+        <span><i class="dot" style="background:#cdd3dd"></i> รอเก็บข้อมูล (ตั้งเป้าไว้)</span>
+        <span style="margin-left:auto;color:var(--lav-600);font-weight:600">ปิดการขาย = งานติดตั้งจริงเฉลี่ย/เดือน</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>ที่มาข้อมูลแต่ละขั้น</h3>
+      <div class="desc">ตัวเลขมาจากไหน · อันไหนจริง อันไหนเป็นเป้าประมาณการ</div>
+      <table class="btable">
+        <thead><tr><th>ขั้น</th><th>ค่า</th><th>สถานะ</th><th>ที่มา</th></tr></thead>
+        <tbody>
+          <tr><td class="pname">ได้รับ Broadcast</td><td class="num">1,091</td><td><span class="chip o">จริง</span></td><td>ไฟล์ Direct Sale ชีต "Data_ยิงสินค้า_ข้อมูลสมาชิก" (กลุ่มสมาชิกที่ยิงรอบแรก)</td></tr>
+          <tr><td class="pname">เปิดอ่าน</td><td class="num">1,091</td><td><span class="chip o">จริง</span></td><td>คอลัมน์ Opened (เปิด 100%)</td></tr>
+          <tr><td class="pname">คลิก / สนใจ</td><td class="num">100</td><td><span class="chip o">จริง</span></td><td>คอลัมน์ Clicked — CTR 9.2%</td></tr>
+          <tr><td class="pname">ตอบกลับ (ทัก)</td><td class="num">55</td><td><span class="chip c">เป้า</span></td><td>ประมาณการ ~55% ของคนคลิก · ยังไม่ track จริง</td></tr>
+          <tr><td class="pname">Lead ใหม่</td><td class="num">38</td><td><span class="chip c">เป้า</span></td><td>ประมาณการ · รอระบบ CRM เก็บจริง</td></tr>
+          <tr><td class="pname">โทร Follow Up</td><td class="num">30</td><td><span class="chip c">เป้า</span></td><td>ประมาณการ · รอเก็บจริง</td></tr>
+          <tr><td class="pname">ส่งใบเสนอราคา</td><td class="num">24</td><td><span class="chip c">เป้า</span></td><td>ประมาณการ · รอเก็บจริง</td></tr>
+          <tr><td class="pname">นัดวัดพื้นที่</td><td class="num">18</td><td><span class="chip c">เป้า</span></td><td>ประมาณการ · รอเก็บจริง</td></tr>
+          <tr><td class="pname">ปิดการขาย (งานจริง)</td><td class="num">16</td><td><span class="chip o">จริง</span></td><td>เฉลี่ยงานติดตั้งจริง/เดือน = (เม.ย. 14 + พ.ค. 18) ÷ 2 จากไฟล์บริการปูพื้น</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin:14px 0 0"><b>สรุป:</b> ขั้น <b>บนสุด 3 ขั้น</b> (Broadcast/เปิด/คลิก) และ <b>ขั้นล่างสุด</b> (ปิดการขาย) เป็นข้อมูลจริง · ขั้น <b>กลาง 5 ขั้น</b> (ตอบกลับ→นัดวัด) เป็นเป้าประมาณการ ยังไม่ได้บันทึกจริง — ต้องให้ทีมเซลส์เก็บสถานะ Lead ในระบบ CRM ก่อน ถึงจะเป็นตัวเลขจริงได้</div>
+    </div>
+  </section>
+
+  <!-- 7 BROADCAST -->
+  <section class="page" data-tab="broadcast">
+    <div class="ptitle">รายละเอียดการยิงสินค้า (Choco CDP)</div>
+    <div class="pdesc">จากไฟล์ยิงจริงใน CDP — ยิงสินค้าอะไร วันไหน มีคนเปิด/คลิกเท่าไหร่ · เลือกสินค้าได้จาก dropdown</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl3"><div class="lab">จำนวนครั้งที่ยิง <span class="tag blush">CDP</span></div><div class="val" id="bc-n">13</div><div class="sub" id="bc-range">ธ.ค. 2025 – เม.ย. 2026</div></div>
+      <div class="card kpi"><div class="lab">ผู้รับรวม (ช่วงที่เลือก)</div><div class="val" id="bc-recip">—</div><div class="sub">ข้อความที่ส่งถึงสมาชิก</div></div>
+      <div class="card kpi"><div class="lab">อัตราเปิดอ่านเฉลี่ย</div><div class="val" id="bc-open">—</div><div class="sub" id="bc-open-sub">Open rate</div></div>
+      <div class="card kpi"><div class="lab">อัตราคลิกเฉลี่ย</div><div class="val" id="bc-click">—</div><div class="sub" id="bc-click-sub">Click rate</div></div>
+    </div>
+    <div class="grid three" style="margin-bottom:18px">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+          <h3 style="margin:0">ยอดเปิด/คลิก แต่ละการยิง</h3>
+          <div style="font-size:12.5px"><span style="color:var(--t-muted);font-weight:600">เลือกสินค้า:</span> <select id="bcSel" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--blush-500);border:1.5px solid var(--blush-200);border-radius:8px;padding:5px 9px;background:#fff;cursor:pointer"></select></div>
+        </div>
+        <div class="desc">แท่ง = จำนวนเปิด/คลิก · ดูภาพรวมหรือเจาะรายสินค้า</div>
+        <div class="chartbox"><canvas id="bcChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>ยิงเดือนละกี่ครั้ง</h3>
+        <div class="desc">จำนวนครั้งที่ยิง Broadcast ต่อเดือน</div>
+        <div class="gnote" id="bcMonthList" style="max-height:300px;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>ตารางการยิงทั้งหมด</h3>
+      <div class="desc">เรียงตามวันที่ · แสดงทุกครั้งที่ยิง Broadcast (ใช้ dropdown "เลือกสินค้า" ด้านบนเพื่อกรองกราฟ)</div>
+      <div id="bcTable"></div>
+    </div>
+    <div class="grid three">
+      <div class="card"><h3>ความสนใจของกลุ่มยิง (Segment)</h3><div class="desc">จากไฟล์ Direct Sale · คอกกั้นเด็ก/เฟอร์นิเจอร์ = เป้าหลักปูพื้น</div><div class="barlist" id="interestList"></div></div>
+      <div class="card"><h3>การเข้าถึงของแคมเปญ</h3><div class="desc">จำนวนสมาชิกที่ได้รับแต่ละแคมเปญ</div><div class="chartbox sm"><canvas id="campChart"></canvas></div></div>
+    </div>
+    <div style="margin:24px 0 4px;font-weight:800;font-size:17px;color:var(--t-head)">🔁 ลูกค้าที่ยิงกลับมาซื้อหรือไม่ (Broadcast → Repurchase)</div>
+    <div class="pdesc">กระทบเบอร์ผู้รับ broadcast (CDP) กับไฟล์ยอดขาย JST (Feedback Product Customer) ด้วย MobileNo (9 หลักท้าย) — นับผู้รับที่มีออเดอร์ใน JST "หลังวันยิง"</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl"><div class="lab">ผู้รับ broadcast ทั้งหมด</div><div class="val" id="rp-recip">—</div><div class="sub">15 ครั้ง (เฉพาะที่มี MobileNo)</div></div>
+      <div class="card kpi"><div class="lab">กลับมาซื้อหลังยิง</div><div class="val" id="rp-buy" style="color:#2EB888">—</div><div class="sub" id="rp-conv">—</div></div>
+      <div class="card kpi"><div class="lab">เปิดอ่านแล้วกลับมาซื้อ</div><div class="val" id="rp-buyopen" style="color:#3A90BB">—</div><div class="sub" id="rp-convopen">—</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.65fr 1fr;gap:18px;align-items:start">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <h3 style="margin:0">อัตรากลับมาซื้อ แต่ละการยิง</h3>
+        <div style="font-size:12.5px"><span style="color:var(--t-muted);font-weight:600">เรียง:</span> <select id="rpSort" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--blush-500);border:1.5px solid var(--blush-200);border-radius:8px;padding:5px 9px;background:#fff;cursor:pointer"><option value="date">ตามวันที่</option><option value="conv">% ซื้อ (มาก→น้อย)</option></select></div>
+      </div>
+      <div class="desc">ผู้รับ · เปิด · กลับมาซื้อ · %ซื้อจากผู้รับ · %ซื้อจากผู้เปิด</div>
+      <div id="rpTable" style="max-height:440px;overflow:auto"></div>
+    </div>
+      <div class="card">
+        <h3>🛒 สินค้าที่กลับมาซื้อ</h3>
+        <div class="desc" id="rpDetailHead">คลิกเลขสีเขียวคอลัมน์ "กลับมาซื้อ" เพื่อดูว่าซื้ออะไรบ้าง</div>
+        <div id="rpDetail" style="max-height:430px;overflow:auto"><div style="color:var(--t-muted);font-size:13px;padding:14px 4px">👆 คลิกตัวเลขในตารางด้านซ้าย</div></div>
+      </div>
+    </div>
+    <div class="note"><b>วิธีกระทบ:</b> match MobileNo (9 หลักท้าย) ของผู้รับ broadcast กับ "เบอร์โทรศัพท์" ในไฟล์ JST · นับ "กลับมาซื้อ" ถ้ามีออเดอร์วันที่ ≥ วันยิง (สินค้าใดก็ได้) · <b>ข้อจำกัด:</b> เบอร์ใน Shopee/Lazada ถูกมาส์ก (******) จับคู่ไม่ได้ → ตัวเลขจริงอาจสูงกว่านี้ · ไม่นับ BEBECARE (รหัสลงทะเบียนรับประกัน ไม่ใช่สินค้าจริง) · การยิงล่าสุด (เม.ย.–มิ.ย.) % ต่ำเพราะเพิ่งยิง เวลายังน้อย</div>
+  </section>
+
+  <!-- Broadcast Hosttail (LINE OA) -->
+  <section class="page" data-tab="bchost">
+    <div class="ptitle">Broadcast Hosttail (LINE OA)</div>
+    <div class="pdesc">การยิง Broadcast ผ่าน LINE OA Hosttail (@hosttailofficial) ตั้งแต่ 18/03/2026 · เก็บ วันที่/เวลา/สินค้าที่ยิง · เพื่อนใน LOA · ส่ง · เปิด · คลิก</div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="card kpi hl"><div class="lab">เพื่อนใน LINE OA Hosttail</div><div class="val">3,087</div><div class="sub">ยอดเพื่อนปัจจุบัน</div></div>
+      <div class="card kpi"><div class="lab">จำนวนครั้งที่ยิง (ช่วงที่เลือก)</div><div class="val" id="bch-n">—</div><div class="sub" id="bch-range">18/03/2026 – ปัจจุบัน</div></div>
+      <div class="card kpi"><div class="lab">อัตราเปิดเฉลี่ย</div><div class="val" id="bch-open">—</div><div class="sub" id="bch-open-sub">Open rate</div></div>
+      <div class="card kpi"><div class="lab">อัตราคลิกเฉลี่ย</div><div class="val" id="bch-click">—</div><div class="sub" id="bch-click-sub">Click rate</div></div>
+    </div>
+    <div class="grid three" style="margin-bottom:18px">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+          <h3 style="margin:0">ยอดเปิด/คลิก แต่ละการยิง</h3>
+          <div style="font-size:12.5px"><span style="color:var(--t-muted);font-weight:600">เลือกสินค้า/ข้อความ:</span> <select id="bchSel" style="font-family:inherit;font-size:12.5px;font-weight:600;color:#E8730C;border:1.5px solid #FBB36B;border-radius:8px;padding:5px 9px;background:#fff;cursor:pointer"></select></div>
+        </div>
+        <div class="desc">แท่ง = จำนวนเปิด/คลิก (สี Hosttail ส้ม)</div>
+        <div class="chartbox"><canvas id="bchChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>ยิงเดือนละกี่ครั้ง</h3>
+        <div class="desc">จำนวนครั้งที่ยิง Broadcast ต่อเดือน</div>
+        <div class="gnote" id="bchMonthList" style="max-height:300px;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>ตารางการยิง Hosttail ทั้งหมด</h3>
+      <div class="desc">วันที่ · เวลา · สินค้า/ข้อความ · เพื่อนใน LOA · ส่ง · เปิด · คลิก</div>
+      <div id="bchTable"></div>
+    </div>
+    <div class="note"><b>ที่มา:</b> ดึงจาก LINE OA Manager (ข้อมูลเชิงลึก › บรอดแคสต์) ของ Host Tail · ครบ 18 ครั้ง 18/03/2026–01/06/2026 · "คลิก" ที่เป็น 0 = ข้อความนั้นไม่มีลิงก์ให้คลิก/ไม่ได้ track · เพื่อนใน LOA = ยอดปัจจุบัน 3,087 (ช่อง "ส่ง" คือกลุ่มที่ส่งจริงแต่ละครั้ง)</div>
+  </section>
+
+  <!-- 8 CONTEXT TOTAL -->
+  <section class="page" data-tab="context">
+    <div class="ptitle">บริบท: ยอดขายรวมทั้งบริษัท</div>
+    <div class="pdesc">จากไฟล์ Direct Sale — ภาพใหญ่ทุกช่องทาง</div>
+    <div class="grid two">
+      <div class="card"><h3>ยอดขายรวมรายเดือน (ทุกแพลตฟอร์ม)</h3><div class="desc">Direct Sale เป็นส่วนหนึ่งของ LINE OA</div><div class="chartbox"><canvas id="totalChart"></canvas></div></div>
+      <div class="card"><h3>Top ร้านค้า / ช่องทาง (สะสม)</h3><div class="desc">⭐ = ช่องทาง Direct (LINE OA)</div><div class="barlist" id="storeList"></div></div>
+    </div>
+  </section>
+
+  <!-- 9 TACTICS -->
+  <section class="page" data-tab="tactics">
+    <div class="ptitle">แผนกลยุทธ์ Direct to Service</div>
+    <div class="pdesc">สรุปจาก brief — Tactic, Lead, Benefit, Segment, Sampling, ระบบติดตาม</div>
+    <div class="grid tac-grid">
+      <div class="tac"><h4>📣 Tactic การเสนอบริการ</h4><ul><li>Broadcast ผ่าน Choco CDP (Bebeplay)</li><li>Broadcast ผ่าน LINE OA (Hosttail)</li><li>Case Study ก่อน–หลังติดตั้ง</li><li>ประเมินพื้นที่ + คำนวณราคาฟรี</li><li>โทร Follow Up คนมี Engagement</li><li>โปรโมชั่นเฉพาะกลุ่ม + Sampling</li></ul></div>
+      <div class="tac"><h4>🪝 Lead ให้ลูกค้าทักกลับ</h4><ul><li>Keyword: "คำนวณฟรี" "ประเมินพื้นที่ฟรี" "ขอราคา"</li><li>ให้ส่งขนาดห้อง/รูปพื้นที่จริง</li><li>แจก Checklist จัดพื้นที่เด็ก/สัตว์</li><li>คำถามสั้น: ลูกอายุ / พื้นแบบไหน</li><li>รีวิว + ผลงานติดตั้งจริง</li><li>ข้อเสนอพิเศษมีเวลาจำกัด</li></ul></div>
+      <div class="tac"><h4>🎁 Benefit ลูกค้า</h4><ul><li>สำรวจพื้นที่ + ปรึกษาฟรี</li><li>ส่วนลดพิเศษช่องทางหลัก</li><li>ตัวอย่างแผ่นปูพื้น 30×30 cm</li><li>ลูกค้าคอก Hosttail: ส่งฟรี</li><li>ลูกค้าทั่วไป: ค่าส่ง 50.-</li><li>มัดจำเริ่มต้น 5,000.-</li></ul></div>
+      <div class="tac"><h4>🎯 ยิง Msg ตาม Segment</h4><ul><li>ยิงตามประวัติการซื้อ</li><li>ยิงตามอายุลูก (Bebeplay)</li><li>ยิงตามประเภทสินค้าที่เคยซื้อ</li><li>ยิงกลุ่มโอกาสปิดสูงพิเศษ</li><li>Re-Engagement คนไม่ซื้อซ้ำ</li></ul></div>
+      <div class="tac"><h4>📦 Sampling Product</h4><ul><li>ส่งตัวอย่าง Safe Space & Rollsafe</li><li>เน้นคนเคยซื้อคอก/สินค้าหลัก</li><li>แนบ QR Code ขอใบเสนอราคา</li><li>ติดตามผล 3–7 วันหลังได้ Sample</li><li>เก็บ Feedback เพื่อปิดการขาย</li></ul></div>
+      <div class="tac"><h4>📋 ระบบติดตาม (CRM)</h4><ul><li>บันทึก Lead ทุกคนที่ตอบกลับ</li><li>ติด Tag ตามความสนใจ</li><li>ติดตามภายใน 3 วันหลังทัก</li><li>บันทึกสถานะ Follow ละเอียด</li><li>วัด Conversion แต่ละขั้น</li></ul></div>
+    </div>
+  </section>
+
+  <div class="note amber" id="memNote"><b>หมายเหตุ:</b> ต.ค. 2025 สมาชิกเพิ่มก้อนใหญ่ 1,367 คน เนื่องจาก<b>เปลี่ยนเวอร์ชันระบบ Choco จาก L3 เป็น L4</b> (ย้าย/รวมฐานสมาชิกเข้าระบบใหม่) จึงไม่ใช่การเติบโตจากแคมเปญปกติ — ทำให้ % เติบโตเดือนนั้นสูงผิดปกติ · ปี 2026 บางเดือนยังไม่มีข้อมูล "สินค้าที่สนใจ"/จังหวัด</div>
+  <div class="note"><b>ที่มาข้อมูล:</b> Direct Sale = Bebeplay LOA (Pivot) + Hosttail ปูพื้น (LOA_hosttail) · บริการปูพื้น = LDS + มัดจำ Event (SER) ทุกช่องทาง · ข้อมูลจริง มี.ค.–มิ.ย. 2026 (มิ.ย. ยังไม่จบเดือน) · สมาชิก = ReportCustomer Choco 2024–2026</div>
+
+  <footer>สร้างจากไฟล์บริการติดตั้งปูพื้น + Direct Sale.xlsx + ReportCustomer Choco · MPD Group</footer>
+  </main>
+</div>
+
+<script>
+// ===== month helpers =====
+const MN=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function mrange(a,b){const r=[];let[y,m]=a.split('-').map(Number);const[ey,em]=b.split('-').map(Number);while(y<ey||(y===ey&&m<=em)){r.push(`${y}-${String(m).padStart(2,'0')}`);m++;if(m>12){m=1;y++;}}return r;}
+const ALLM=mrange('2024-01','2026-07');
+const M26=mrange('2026-01','2026-07');
+const fmt=ym=>{const[y,m]=ym.split('-');return MN[+m-1]+y.slice(2)+(PARTIAL[ym]?'*':'');};
+const PARTIAL={"2026-07":true};
+
+// ===== Direct Sale =====
+const DS_BEBE={"2026-01":54676,"2026-02":48481,"2026-03":135688,"2026-04":193393,"2026-05":163039,"2026-06":209671,"2026-07":88252};
+const DS_HOST={"2026-03":109600,"2026-04":47400,"2026-05":348670,"2026-06":114315,"2026-07":361150};
+const DS_HOST_PEND={};
+const dsBebe=m=>DS_BEBE[m]||0, dsHost=m=>DS_HOST[m]||0, dsTot=m=>dsBebe(m)+dsHost(m);
+
+// ===== Floor service ===== (Mar from SharePoint cloud read)
+const SVC={real:["2026-03","2026-04","2026-05","2026-06","2026-07"],
+ total:{"2026-03":193590,"2026-04":428012,"2026-05":515204,"2026-06":320765,"2026-07":481900},
+ chan:{"2026-03":{"FB_hosttail":59990,"LOA_hosttail":109600,"LOA_bebeplay":24000},
+   "2026-04":{"FB_hosttail":264672,"LOA_hosttail":47400,"LOA_bebeplay":103700,"FB_bebeplay":10240,"Event Pet Expo":2000},
+   "2026-05":{"FB_hosttail":96264,"LOA_hosttail":348670,"LOA_bebeplay":600,"FB_bebeplay":62670,"Event Pet Expo":7000},
+   "2026-06":{"FB_hosttail":62400,"LOA_hosttail":114315,"LOA_bebeplay":121300,"FB_bebeplay":22750},
+   "2026-07":{"FB_hosttail":77550,"LOA_hosttail":361150,"LOA_bebeplay":43200}}};
+const CHANS=["FB_hosttail","LOA_hosttail","FB_bebeplay","LOA_bebeplay","Event Pet Expo"];
+// Hosttail = orange shades · Bebeplay = blue shades · Event = violet (not orange)
+const CHANC={"FB_hosttail":"#E8730C","LOA_hosttail":"#FBB36B","FB_bebeplay":"#2E7DA8","LOA_bebeplay":"#7EC8E3","Event Pet Expo":"#9B8AF0"};
+const BRANDC={"Hosttail":"#F6841F","Bebeplay":"#5AACCF","Event":"#9B8AF0"};   // ส้ม / ฟ้า / ม่วง
+const CLR_DIRECT="#2EB888";   // Direct (LINE OA รวม) = เขียว
+// สีช่องทางสมาชิกตามไอคอนแอปจริง
+const APPC={"Shopee":"#EE4D2D","Facebook":"#1877F2","Lazada":"#0F1470","Tiktok":"#161823","TikTok":"#161823","Line":"#06C755","Central":"#E4002B","Robinson":"#D81E05","Website":"#0EA5E9","ร้านตัวแทนจำหน่าย":"#9333EA","งาน BBB":"#F59E0B"};
+const appColor=(n,i)=>APPC[n]||["#94A3B8","#64748B","#A78BFA","#34D399","#FBBF24","#F472B6"][i%6];
+const brandOf=c=>c.includes("hosttail")?"Hosttail":c.includes("bebeplay")?"Bebeplay":"Event";
+
+// ===== Members (Choco) =====
+const MEM={"months": ["2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"], "total": 3097, "byMonth": {"2026-07":{"n":80,"sp":0,"int":{"(ไม่ระบุ)":80},"ch":{"Facebook":7,"Shopee":42,"Tiktok":3,"(ไม่ระบุ)":20,"Central":3,"ร้านตัวแทนจำหน่าย":2,"Lazada":2,"Website":1},"prov":{"(ไม่ระบุ)":80},"gen":{"หญิง":52,"ชาย":19,"ไม่ระบุ":9},"spInt":{"(ไม่ระบุ)":0}},"2026-06":{"n":105,"sp":0,"int":{"(ไม่ระบุ)":105},"ch":{"Central":1,"(ไม่ระบุ)":28,"Shopee":46,"งาน BBB":4,"Facebook":13,"Tiktok":8,"ร้านตัวแทนจำหน่าย":1,"Lazada":3,"Website":1},"prov":{"(ไม่ระบุ)":105},"gen":{"หญิง":80,"ชาย":20,"ไม่ระบุ":5},"spInt":{"(ไม่ระบุ)":0}},"2024-01": {"n": 35, "sp": 178787, "int": {"(ไม่ระบุ)": 30, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "ขนมเสริมพัฒนาการ": 1, "ของเล่นเสริมพัฒนาการ": 2, "คอกกั้นเด็ก": 1}, "ch": {"(ไม่ระบุ)": 29, "Facebook": 2, "Shopee": 2, "Central": 2}, "prov": {"(ไม่ระบุ)": 35}, "gen": {"หญิง": 20, "ไม่ระบุ": 12, "ชาย": 3}, "spInt": {"(ไม่ระบุ)": 172654, "เฟอร์นิเจอร์สำหรับเด็ก": 5790, "ขนมเสริมพัฒนาการ": 343, "ของเล่นเสริมพัฒนาการ": 0, "คอกกั้นเด็ก": 0}}, "2024-02": {"n": 26, "sp": 235932, "int": {"เก้าอี้ทานข้าว": 2, "เบาะรองคลาน": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 3, "ขนมเสริมพัฒนาการ": 1, "ของเล่นเสริมพัฒนาการ": 1, "(ไม่ระบุ)": 15, "คอกกั้นเด็ก": 3}, "ch": {"Shopee": 4, "ร้านตัวแทนจำหน่าย": 2, "Line": 1, "(ไม่ระบุ)": 15, "Facebook": 3, "Central": 1}, "prov": {"(ไม่ระบุ)": 26}, "gen": {"หญิง": 22, "ชาย": 4}, "spInt": {"เก้าอี้ทานข้าว": 2574, "เบาะรองคลาน": 4990, "เฟอร์นิเจอร์สำหรับเด็ก": 8704, "ขนมเสริมพัฒนาการ": 409, "ของเล่นเสริมพัฒนาการ": 7590, "(ไม่ระบุ)": 198248, "คอกกั้นเด็ก": 13417}}, "2024-03": {"n": 23, "sp": 111084, "int": {"คอกกั้นเด็ก": 3, "(ไม่ระบุ)": 15, "เบาะรองคลาน": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "ของเล่นเสริมพัฒนาการ": 1, "เก้าอี้ทานข้าว": 2}, "ch": {"Shopee": 5, "(ไม่ระบุ)": 13, "Facebook": 2, "Lazada": 1, "ร้านตัวแทนจำหน่าย": 1, "Tiktok": 1}, "prov": {"(ไม่ระบุ)": 23}, "gen": {"หญิง": 17, "ชาย": 6}, "spInt": {"คอกกั้นเด็ก": 20818, "(ไม่ระบุ)": 68779, "เบาะรองคลาน": 4360, "เฟอร์นิเจอร์สำหรับเด็ก": 8990, "ของเล่นเสริมพัฒนาการ": 6242, "เก้าอี้ทานข้าว": 1895}}, "2024-04": {"n": 40, "sp": 168844, "int": {"อุปกรณ์ทานข้าว": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 5, "(ไม่ระบุ)": 28, "ของเล่นเสริมพัฒนาการ": 2, "คอกกั้นเด็ก": 4}, "ch": {"Shopee": 5, "Facebook": 4, "(ไม่ระบุ)": 27, "Website": 2, "ร้านตัวแทนจำหน่าย": 2}, "prov": {"(ไม่ระบุ)": 40}, "gen": {"หญิง": 35, "ชาย": 5}, "spInt": {"อุปกรณ์ทานข้าว": 2609, "เฟอร์นิเจอร์สำหรับเด็ก": 22436, "(ไม่ระบุ)": 100159, "ของเล่นเสริมพัฒนาการ": 6080, "คอกกั้นเด็ก": 37560}}, "2024-05": {"n": 29, "sp": 94331, "int": {"คอกกั้นเด็ก": 4, "ของเล่นเสริมพัฒนาการ": 2, "(ไม่ระบุ)": 16, "เก้าอี้ทานข้าว": 4, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "ขนมเสริมพัฒนาการ": 2}, "ch": {"Shopee": 6, "(ไม่ระบุ)": 15, "Facebook": 2, "ร้านตัวแทนจำหน่าย": 4, "Lazada": 1, "Tiktok": 1}, "prov": {"(ไม่ระบุ)": 29}, "gen": {"ไม่ระบุ": 3, "หญิง": 21, "ชาย": 5}, "spInt": {"คอกกั้นเด็ก": 42952, "ของเล่นเสริมพัฒนาการ": 16744, "(ไม่ระบุ)": 19460, "เก้าอี้ทานข้าว": 11225, "เฟอร์นิเจอร์สำหรับเด็ก": 1268, "ขนมเสริมพัฒนาการ": 2682}}, "2024-06": {"n": 36, "sp": 233762, "int": {"(ไม่ระบุ)": 23, "เบาะรองคลาน": 2, "คอกกั้นเด็ก": 4, "เก้าอี้ทานข้าว": 3, "เฟอร์นิเจอร์สำหรับเด็ก": 3, "ของเล่นเสริมพัฒนาการ": 1}, "ch": {"(ไม่ระบุ)": 22, "Tiktok": 2, "Shopee": 4, "Central": 3, "ร้านตัวแทนจำหน่าย": 3, "Facebook": 1, "Lazada": 1}, "prov": {"(ไม่ระบุ)": 36}, "gen": {"หญิง": 31, "ชาย": 5}, "spInt": {"(ไม่ระบุ)": 173391, "เบาะรองคลาน": 11660, "คอกกั้นเด็ก": 17043, "เก้าอี้ทานข้าว": 17380, "เฟอร์นิเจอร์สำหรับเด็ก": 11070, "ของเล่นเสริมพัฒนาการ": 3218}}, "2024-07": {"n": 45, "sp": 320754, "int": {"(ไม่ระบุ)": 35, "คอกกั้นเด็ก": 7, "เฟอร์นิเจอร์สำหรับเด็ก": 3}, "ch": {"Facebook": 2, "(ไม่ระบุ)": 33, "Website": 1, "Shopee": 4, "Tiktok": 1, "Lazada": 1, "ร้านตัวแทนจำหน่าย": 2, "Robinson": 1}, "prov": {"(ไม่ระบุ)": 45}, "gen": {"หญิง": 29, "ไม่ระบุ": 12, "ชาย": 4}, "spInt": {"(ไม่ระบุ)": 244506, "คอกกั้นเด็ก": 58829, "เฟอร์นิเจอร์สำหรับเด็ก": 17419}}, "2024-08": {"n": 29, "sp": 107962, "int": {"(ไม่ระบุ)": 25, "คอกกั้นเด็ก": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "เก้าอี้ทานข้าว": 1, "ของเล่นเสริมพัฒนาการ": 1}, "ch": {"(ไม่ระบุ)": 25, "Robinson": 2, "Shopee": 2}, "prov": {"(ไม่ระบุ)": 29}, "gen": {"ไม่ระบุ": 14, "หญิง": 11, "ชาย": 4}, "spInt": {"(ไม่ระบุ)": 86687, "คอกกั้นเด็ก": 15840, "เฟอร์นิเจอร์สำหรับเด็ก": 716, "เก้าอี้ทานข้าว": 3529, "ของเล่นเสริมพัฒนาการ": 1190}}, "2024-09": {"n": 48, "sp": 270318, "int": {"อื่นๆ": 1, "(ไม่ระบุ)": 36, "คอกกั้นเด็ก": 3, "เก้าอี้ทานข้าว": 2, "ของเล่นเสริมพัฒนาการ": 4, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "อุปกรณ์ทานข้าว": 1}, "ch": {"Shopee": 8, "(ไม่ระบุ)": 35, "Facebook": 3, "ร้านตัวแทนจำหน่าย": 2}, "prov": {"(ไม่ระบุ)": 48}, "gen": {"หญิง": 15, "ไม่ระบุ": 25, "ชาย": 8}, "spInt": {"อื่นๆ": 10756, "(ไม่ระบุ)": 181678, "คอกกั้นเด็ก": 36458, "เก้าอี้ทานข้าว": 11720, "ของเล่นเสริมพัฒนาการ": 13564, "เฟอร์นิเจอร์สำหรับเด็ก": 10300, "อุปกรณ์ทานข้าว": 5842}}, "2024-10": {"n": 50, "sp": 180239, "int": {"(ไม่ระบุ)": 39, "คอกกั้นเด็ก": 6, "ของเล่นเสริมพัฒนาการ": 2, "อุปกรณ์ทานข้าว": 1, "เบาะรองคลาน": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 1}, "ch": {"(ไม่ระบุ)": 39, "Shopee": 7, "ร้านตัวแทนจำหน่าย": 2, "Facebook": 2}, "prov": {"(ไม่ระบุ)": 50}, "gen": {"ไม่ระบุ": 20, "หญิง": 21, "ชาย": 9}, "spInt": {"(ไม่ระบุ)": 130050, "คอกกั้นเด็ก": 36232, "ของเล่นเสริมพัฒนาการ": 1690, "อุปกรณ์ทานข้าว": 1687, "เบาะรองคลาน": 7290, "เฟอร์นิเจอร์สำหรับเด็ก": 3290}}, "2024-11": {"n": 21, "sp": 67560, "int": {"คอกกั้นเด็ก": 6, "(ไม่ระบุ)": 11, "ของเล่นเสริมพัฒนาการ": 1, "เบาะรองคลาน": 2, "เก้าอี้ทานข้าว": 1}, "ch": {"Shopee": 7, "(ไม่ระบุ)": 10, "Lazada": 2, "ร้านตัวแทนจำหน่าย": 2}, "prov": {"(ไม่ระบุ)": 21}, "gen": {"หญิง": 19, "ชาย": 2}, "spInt": {"คอกกั้นเด็ก": 23614, "(ไม่ระบุ)": 35079, "ของเล่นเสริมพัฒนาการ": 3100, "เบาะรองคลาน": 5767, "เก้าอี้ทานข้าว": 0}}, "2024-12": {"n": 29, "sp": 87122, "int": {"(ไม่ระบุ)": 17, "เฟอร์นิเจอร์สำหรับเด็ก": 6, "คอกกั้นเด็ก": 5, "ของเล่นเสริมพัฒนาการ": 1}, "ch": {"Shopee": 8, "Lazada": 4, "Facebook": 1, "(ไม่ระบุ)": 15, "ร้านตัวแทนจำหน่าย": 1}, "prov": {"(ไม่ระบุ)": 29}, "gen": {"หญิง": 21, "ชาย": 7, "ไม่ระบุ": 1}, "spInt": {"(ไม่ระบุ)": 28552, "เฟอร์นิเจอร์สำหรับเด็ก": 17149, "คอกกั้นเด็ก": 29001, "ของเล่นเสริมพัฒนาการ": 12420}}, "2025-01": {"n": 39, "sp": 73719, "int": {"เก้าอี้ทานข้าว": 5, "อื่นๆ": 1, "ขนมเสริมพัฒนาการ": 6, "คอกกั้นเด็ก": 2, "(ไม่ระบุ)": 20, "ของเล่นเสริมพัฒนาการ": 2, "เบาะรองคลาน": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 2}, "ch": {"Shopee": 17, "Lazada": 2, "ร้านตัวแทนจำหน่าย": 1, "(ไม่ระบุ)": 19}, "prov": {"(ไม่ระบุ)": 39}, "gen": {"หญิง": 34, "ไม่ระบุ": 2, "ชาย": 3}, "spInt": {"เก้าอี้ทานข้าว": 8762, "อื่นๆ": 0, "ขนมเสริมพัฒนาการ": 5478, "คอกกั้นเด็ก": 21905, "(ไม่ระบุ)": 15050, "ของเล่นเสริมพัฒนาการ": 10943, "เบาะรองคลาน": 2616, "เฟอร์นิเจอร์สำหรับเด็ก": 8965}}, "2025-02": {"n": 29, "sp": 76089, "int": {"คอกกั้นเด็ก": 4, "เก้าอี้ทานข้าว": 2, "(ไม่ระบุ)": 19, "เฟอร์นิเจอร์สำหรับเด็ก": 1, "เบาะรองคลาน": 2, "ของเล่นเสริมพัฒนาการ": 1}, "ch": {"Shopee": 9, "(ไม่ระบุ)": 18, "ร้านตัวแทนจำหน่าย": 1, "Facebook": 1}, "prov": {"(ไม่ระบุ)": 29}, "gen": {"หญิง": 23, "ชาย": 6}, "spInt": {"คอกกั้นเด็ก": 25197, "เก้าอี้ทานข้าว": 6713, "(ไม่ระบุ)": 31645, "เฟอร์นิเจอร์สำหรับเด็ก": 6249, "เบาะรองคลาน": 3855, "ของเล่นเสริมพัฒนาการ": 2430}}, "2025-03": {"n": 39, "sp": 89867, "int": {"คอกกั้นเด็ก": 8, "ของเล่นเสริมพัฒนาการ": 3, "เฟอร์นิเจอร์สำหรับเด็ก": 5, "(ไม่ระบุ)": 22, "เบาะรองคลาน": 1}, "ch": {"Shopee": 12, "ร้านตัวแทนจำหน่าย": 3, "Lazada": 2, "(ไม่ระบุ)": 20, "Website": 1, "Robinson": 1}, "prov": {"(ไม่ระบุ)": 39}, "gen": {"หญิง": 30, "ชาย": 8, "ไม่ระบุ": 1}, "spInt": {"คอกกั้นเด็ก": 32772, "ของเล่นเสริมพัฒนาการ": 14335, "เฟอร์นิเจอร์สำหรับเด็ก": 19665, "(ไม่ระบุ)": 20824, "เบาะรองคลาน": 2271}}, "2025-04": {"n": 36, "sp": 91575, "int": {"อื่นๆ": 1, "(ไม่ระบุ)": 18, "เฟอร์นิเจอร์สำหรับเด็ก": 3, "ของเล่นเสริมพัฒนาการ": 3, "ขนมเสริมพัฒนาการ": 2, "คอกกั้นเด็ก": 6, "เบาะรองคลาน": 2, "เก้าอี้ทานข้าว": 1}, "ch": {"งาน BBB": 1, "(ไม่ระบุ)": 15, "Lazada": 1, "Facebook": 1, "Shopee": 14, "ร้านตัวแทนจำหน่าย": 2, "Line": 1, "Tiktok": 1}, "prov": {"(ไม่ระบุ)": 36}, "gen": {"หญิง": 28, "ไม่ระบุ": 6, "ชาย": 2}, "spInt": {"อื่นๆ": 2590, "(ไม่ระบุ)": 18129, "เฟอร์นิเจอร์สำหรับเด็ก": 9025, "ของเล่นเสริมพัฒนาการ": 3076, "ขนมเสริมพัฒนาการ": 4393, "คอกกั้นเด็ก": 39996, "เบาะรองคลาน": 12276, "เก้าอี้ทานข้าว": 2090}}, "2025-05": {"n": 54, "sp": 159799, "int": {"คอกกั้นเด็ก": 6, "เฟอร์นิเจอร์สำหรับเด็ก": 7, "เก้าอี้ทานข้าว": 6, "(ไม่ระบุ)": 29, "ของเล่นเสริมพัฒนาการ": 4, "ขนมเสริมพัฒนาการ": 1, "เบาะรองคลาน": 1}, "ch": {"Shopee": 24, "(ไม่ระบุ)": 25, "Facebook": 2, "Lazada": 1, "Website": 1, "Tiktok": 1}, "prov": {"(ไม่ระบุ)": 54}, "gen": {"หญิง": 41, "ไม่ระบุ": 1, "ชาย": 12}, "spInt": {"คอกกั้นเด็ก": 39383, "เฟอร์นิเจอร์สำหรับเด็ก": 32897, "เก้าอี้ทานข้าว": 20124, "(ไม่ระบุ)": 46338, "ของเล่นเสริมพัฒนาการ": 20065, "ขนมเสริมพัฒนาการ": 0, "เบาะรองคลาน": 992}}, "2025-06": {"n": 69, "sp": 258572, "int": {"(ไม่ระบุ)": 41, "คอกกั้นเด็ก": 11, "ของเล่นเสริมพัฒนาการ": 4, "เฟอร์นิเจอร์สำหรับเด็ก": 5, "เก้าอี้ทานข้าว": 6, "อุปกรณ์ทานข้าว": 1, "เบาะรองคลาน": 1}, "ch": {"(ไม่ระบุ)": 36, "Shopee": 25, "Central": 1, "Lazada": 4, "ร้านตัวแทนจำหน่าย": 3}, "prov": {"(ไม่ระบุ)": 69}, "gen": {"หญิง": 50, "ชาย": 6, "ไม่ระบุ": 13}, "spInt": {"(ไม่ระบุ)": 107831, "คอกกั้นเด็ก": 76456, "ของเล่นเสริมพัฒนาการ": 23136, "เฟอร์นิเจอร์สำหรับเด็ก": 19129, "เก้าอี้ทานข้าว": 31463, "อุปกรณ์ทานข้าว": 557, "เบาะรองคลาน": 0}}, "2025-07": {"n": 55, "sp": 136134, "int": {"เฟอร์นิเจอร์สำหรับเด็ก": 6, "คอกกั้นเด็ก": 7, "(ไม่ระบุ)": 35, "ขนมเสริมพัฒนาการ": 2, "ของเล่นเสริมพัฒนาการ": 4, "เก้าอี้ทานข้าว": 1}, "ch": {"Shopee": 19, "(ไม่ระบุ)": 31, "Tiktok": 1, "Facebook": 2, "Line": 1, "Lazada": 1}, "prov": {"(ไม่ระบุ)": 55}, "gen": {"หญิง": 43, "ไม่ระบุ": 7, "ชาย": 5}, "spInt": {"เฟอร์นิเจอร์สำหรับเด็ก": 29049, "คอกกั้นเด็ก": 50074, "(ไม่ระบุ)": 46801, "ขนมเสริมพัฒนาการ": 525, "ของเล่นเสริมพัฒนาการ": 9354, "เก้าอี้ทานข้าว": 331}}, "2025-08": {"n": 42, "sp": 153789, "int": {"(ไม่ระบุ)": 20, "อื่นๆ": 1, "เฟอร์นิเจอร์สำหรับเด็ก": 4, "คอกกั้นเด็ก": 9, "เก้าอี้ทานข้าว": 3, "ของเล่นเสริมพัฒนาการ": 4, "เบาะรองคลาน": 1}, "ch": {"(ไม่ระบุ)": 19, "Line": 1, "Shopee": 15, "Lazada": 3, "Facebook": 2, "ร้านตัวแทนจำหน่าย": 2}, "prov": {"(ไม่ระบุ)": 42}, "gen": {"หญิง": 27, "ชาย": 8, "ไม่ระบุ": 7}, "spInt": {"(ไม่ระบุ)": 31352, "อื่นๆ": 14380, "เฟอร์นิเจอร์สำหรับเด็ก": 33616, "คอกกั้นเด็ก": 51216, "เก้าอี้ทานข้าว": 16926, "ของเล่นเสริมพัฒนาการ": 2461, "เบาะรองคลาน": 3838}}, "2025-09": {"n": 86, "sp": 210805, "int": {"(ไม่ระบุ)": 52, "ของเล่นเสริมพัฒนาการ": 3, "อื่นๆ": 7, "ที่กั้นเตียง": 1, "คอกกั้นเด็ก": 8, "เฟอร์นิเจอร์สำหรับเด็ก": 7, "อุปกรณ์ทานข้าว": 1, "ขนมเสริมพัฒนาการ": 2, "เบาะรองคลาน": 2, "เก้าอี้ทานข้าว": 3}, "ch": {"(ไม่ระบุ)": 42, "Shopee": 28, "Lazada": 2, "Website": 2, "Facebook": 5, "งาน BBB": 2, "Line": 2, "Tiktok": 2, "ร้านตัวแทนจำหน่าย": 1}, "prov": {"กรุงเทพมหานคร": 7, "(ไม่ระบุ)": 65, "อื่นๆ": 7, "ปทุมธานี": 2, "เชียงใหม่": 1, "ชลบุรี": 2, "นนทบุรี": 1, "สมุทรปราการ": 1}, "gen": {"หญิง": 54, "ชาย": 25, "ไม่ระบุ": 7}, "spInt": {"(ไม่ระบุ)": 94868, "ของเล่นเสริมพัฒนาการ": 20620, "อื่นๆ": 2764, "ที่กั้นเตียง": 0, "คอกกั้นเด็ก": 30857, "เฟอร์นิเจอร์สำหรับเด็ก": 36104, "อุปกรณ์ทานข้าว": 2562, "ขนมเสริมพัฒนาการ": 1263, "เบาะรองคลาน": 11568, "เก้าอี้ทานข้าว": 10199}}, "2025-10": {"n": 1367, "sp": 4009948, "int": {"(ไม่ระบุ)": 820, "อื่นๆ": 30, "คอกกั้นเด็ก": 211, "ของเล่น": 3, "เก้าอี้ทานข้าว": 52, "เฟอร์นิเจอร์สำหรับเด็ก": 107, "ที่กั้นเตียง": 3, "เบาะรองคลาน": 35, "สินค้าเด็ก": 1, "ขนมเสริมพัฒนาการ": 27, "ของเล่นเสริมพัฒนาการ": 63, "อุปกรณ์ทานข้าว": 15}, "ch": {"(ไม่ระบุ)": 745, "Shopee": 419, "Facebook": 63, "Line": 5, "Lazada": 45, "ร้านตัวแทนจำหน่าย": 57, "Robinson": 5, "Central": 12, "Tiktok": 10, "Website": 6}, "prov": {"(ไม่ระบุ)": 1302, "กรุงเทพมหานคร": 18, "สมุทรปราการ": 6, "นครปฐม": 6, "อื่นๆ": 16, "นนทบุรี": 9, "ระยอง": 1, "นครสวรรค์": 2, "ภูเก็ต": 2, "เชียงใหม่": 4, "ชลบุรี": 1}, "gen": {"หญิง": 984, "ชาย": 242, "ไม่ระบุ": 141}, "spInt": {"(ไม่ระบุ)": 1275989, "อื่นๆ": 74837, "คอกกั้นเด็ก": 1308504, "ของเล่น": 4443, "เก้าอี้ทานข้าว": 146387, "เฟอร์นิเจอร์สำหรับเด็ก": 453268, "ที่กั้นเตียง": 5790, "เบาะรองคลาน": 125583, "สินค้าเด็ก": 0, "ขนมเสริมพัฒนาการ": 274943, "ของเล่นเสริมพัฒนาการ": 262326, "อุปกรณ์ทานข้าว": 77878}}, "2025-11": {"n": 106, "sp": 360685, "int": {"ที่กั้นเตียง": 3, "คอกกั้นเด็ก": 20, "เฟอร์นิเจอร์สำหรับเด็ก": 4, "(ไม่ระบุ)": 51, "เก้าอี้ทานข้าว": 3, "เบาะรองคลาน": 1, "ของเล่นเสริมพัฒนาการ": 2, "ขนมเสริมพัฒนาการ": 1, "อุปกรณ์ทานข้าว": 1, "อื่นๆ": 18, "สินค้าเด็ก": 2}, "ch": {"Central": 5, "Shopee": 35, "(ไม่ระบุ)": 48, "Lazada": 4, "Facebook": 7, "Tiktok": 1, "ร้านตัวแทนจำหน่าย": 5, "Robinson": 1}, "prov": {"(ไม่ระบุ)": 69, "กรุงเทพมหานคร": 13, "อื่นๆ": 12, "นนทบุรี": 4, "สมุทรปราการ": 2, "ปทุมธานี": 2, "นครปฐม": 1, "เชียงราย": 1, "ชลบุรี": 1, "นครสวรรค์": 1}, "gen": {"หญิง": 79, "ชาย": 14, "ไม่ระบุ": 13}, "spInt": {"ที่กั้นเตียง": 13400, "คอกกั้นเด็ก": 134927, "เฟอร์นิเจอร์สำหรับเด็ก": 24356, "(ไม่ระบุ)": 93549, "เก้าอี้ทานข้าว": 2000, "เบาะรองคลาน": 9563, "ของเล่นเสริมพัฒนาการ": 3277, "ขนมเสริมพัฒนาการ": 211, "อุปกรณ์ทานข้าว": 2985, "อื่นๆ": 68099, "สินค้าเด็ก": 8318}}, "2025-12": {"n": 127, "sp": 294866, "int": {"คอกกั้นเด็ก": 16, "(ไม่ระบุ)": 30, "ของเล่นเสริมพัฒนาการ": 5, "เฟอร์นิเจอร์สำหรับเด็ก": 5, "ขนมเสริมพัฒนาการ": 1, "เก้าอี้ทานข้าว": 5, "อื่นๆ": 52, "ที่กั้นเตียง": 5, "เครื่องดูดน้ำมูก": 4, "สินค้าเด็ก": 3, "เบาะรองคลาน": 1}, "ch": {"Shopee": 67, "(ไม่ระบุ)": 25, "Facebook": 12, "Tiktok": 3, "Lazada": 8, "ร้านตัวแทนจำหน่าย": 5, "Line": 5, "งาน BBB": 1, "Website": 1}, "prov": {"ชลบุรี": 5, "(ไม่ระบุ)": 38, "นนทบุรี": 12, "กรุงเทพมหานคร": 31, "อื่นๆ": 20, "เชียงราย": 2, "นครปฐม": 5, "สมุทรปราการ": 7, "ปทุมธานี": 6, "นครสวรรค์": 1}, "gen": {"ชาย": 25, "หญิง": 97, "ไม่ระบุ": 5}, "spInt": {"คอกกั้นเด็ก": 69898, "(ไม่ระบุ)": 37771, "ของเล่นเสริมพัฒนาการ": 9385, "เฟอร์นิเจอร์สำหรับเด็ก": 37927, "ขนมเสริมพัฒนาการ": 1094, "เก้าอี้ทานข้าว": 2821, "อื่นๆ": 107741, "ที่กั้นเตียง": 17618, "เครื่องดูดน้ำมูก": 7267, "สินค้าเด็ก": 3344, "เบาะรองคลาน": 0}}, "2026-01": {"n": 107, "sp": 263571, "int": {"(ไม่ระบุ)": 107}, "ch": {"(ไม่ระบุ)": 107}, "prov": {"อื่นๆ": 27, "นนทบุรี": 7, "ปทุมธานี": 8, "กรุงเทพมหานคร": 35, "นครปฐม": 4, "ระยอง": 5, "ชลบุรี": 4, "ภูเก็ต": 1, "สมุทรปราการ": 6, "นครสวรรค์": 1, "(ไม่ระบุ)": 5, "เชียงราย": 2, "เชียงใหม่": 2}, "gen": {"ชาย": 19, "หญิง": 83, "ไม่ระบุ": 5}, "spInt": {"(ไม่ระบุ)": 263571}}, "2026-02": {"n": 146, "sp": 330099, "int": {"(ไม่ระบุ)": 146}, "ch": {"(ไม่ระบุ)": 146}, "prov": {"อื่นๆ": 38, "สมุทรปราการ": 13, "กรุงเทพมหานคร": 44, "นครปฐม": 4, "ชลบุรี": 10, "นนทบุรี": 12, "ภูเก็ต": 4, "ปทุมธานี": 5, "(ไม่ระบุ)": 7, "เชียงราย": 2, "นครสวรรค์": 2, "ระยอง": 2, "เชียงใหม่": 3}, "gen": {"หญิง": 103, "ชาย": 38, "ไม่ระบุ": 5}, "spInt": {"(ไม่ระบุ)": 330099}}, "2026-03": {"n": 44, "sp": 112036, "int": {"(ไม่ระบุ)": 44}, "ch": {"(ไม่ระบุ)": 28, "Shopee": 8, "งาน BBB": 1, "Facebook": 4, "ร้านตัวแทนจำหน่าย": 1, "Lazada": 1, "Tiktok": 1}, "prov": {"(ไม่ระบุ)": 26, "นนทบุรี": 2, "อื่นๆ": 4, "ปทุมธานี": 3, "กรุงเทพมหานคร": 6, "ชลบุรี": 1, "สมุทรปราการ": 1, "ภูเก็ต": 1}, "gen": {"หญิง": 34, "ชาย": 9, "ไม่ระบุ": 1}, "spInt": {"(ไม่ระบุ)": 112036}}, "2026-04": {"n": 68, "sp": 101667, "int": {"(ไม่ระบุ)": 68}, "ch": {"Shopee": 35, "(ไม่ระบุ)": 14, "Tiktok": 2, "Facebook": 11, "งาน BBB": 3, "Central": 1, "Lazada": 2}, "prov": {"(ไม่ระบุ)": 68}, "gen": {"หญิง": 53, "ชาย": 12, "ไม่ระบุ": 3}, "spInt": {"(ไม่ระบุ)": 101667}}, "2026-05": {"n": 87, "sp": 178486, "int": {"(ไม่ระบุ)": 87}, "ch": {"Shopee": 47, "(ไม่ระบุ)": 15, "Facebook": 9, "Tiktok": 2, "ร้านตัวแทนจำหน่าย": 2, "Line": 5, "งาน BBB": 3, "Website": 2, "Central": 2}, "prov": {"(ไม่ระบุ)": 87}, "gen": {"หญิง": 68, "ชาย": 17, "ไม่ระบุ": 2}, "spInt": {"(ไม่ระบุ)": 178486}}}};
+const MEMM=MEM.months;
+
+// ===== ลงทะเบียนรับประกันสินค้า (Google Form รายเดือน) =====
+const WARR={"2025-06":43,"2025-07":99,"2025-08":168,"2025-09":100,"2025-10":69,"2025-11":33,"2025-12":80,"2026-01":84,"2026-02":97,"2026-03":34,"2026-04":48,"2026-05":62,"2026-06":61,"2026-07":42};
+
+// ===== บริการติดตั้ง (Planner export) =====
+const INST={"tasks":[{"bill":"253313","name":"253314 เตียงLuna,ชั้นเปลี่","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"","name":"","bucket":"(ไม่มี)","status":"ค้าง","cat":"Install","amt":null},{"bill":"253035","name":"เตียงLuna","bucket":"จองคิวติดตั้ง","status":"เสร็จ","cat":"Install","amt":7190},{"bill":"253088","name":"","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":5490},{"bill":"253106","name":"แตกบิลเป็นบิล 253709แตก 26","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Install","amt":null},{"bill":"253123","name":"เตียงLuna","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":7190},{"bill":"253245","name":"คอกHomie,ส่งLalamoveแล้ว","bucket":"โทรคอนเฟิร์ม","status":"ค้าง","cat":"Install","amt":10300},{"bill":"253273","name":"เตียงLuna","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":7100},{"bill":"253328","name":"เตียงLuna","bucket":"ลูกค้าประกอบเอง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"252907","name":"เตียงLuna,เก้าอี้เปลไกวไฟฟ","bucket":"ลูกค้าประกอบเอง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"252909","name":"เตียงLuna ส่ง Lalamove แล้","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"253398","name":"เตียงLuna","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"253503","name":"คอกHomie","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":10300},{"bill":"252947","name":"เตียงEden,เตียงSnowy / 9/2","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Install","amt":8250},{"bill":"253342","name":"เตียงEdenสีขาว สินค้าเข้าแ","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":4400},{"bill":"253307","name":"เตียงEdenขาว ยกเลิกคืนเงิน","bucket":"จองคิวติดตั้ง","status":"เสร็จ","cat":"Install","amt":4490},{"bill":"253523","name":"เตียงEdenสีไม้","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":6390},{"bill":"253527","name":"คอกHugbear,เก้าอี้buddy ส่","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":20990},{"bill":"253359","name":"คอกHomie,ส่งLalamoveแล้ว","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":14500},{"bill":"256007","name":"เตียง LUNA เก็บค่าบริการแล","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"256210","name":"ที่กั้นบันได (เก็บค่าบริกา","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"256861","name":"เตียง Luna สี Natural สีไม","bucket":"ประกอบส่งด่วน","status":"เสร็จ","cat":"Install","amt":null},{"bill":"253559","name":"เตียงนอนไม้สำหรับเด็ก รุ่น","bucket":"ประกอบส่งด่วน","status":"เสร็จ","cat":"Install","amt":7651},{"bill":"253679","name":"Bebeplay ตู้เก็บของ 3 ตอน ","bucket":"ประกอบส่งด่วน","status":"เสร็จ","cat":"Install","amt":3590},{"bill":"258697","name":"Bee Jitsuda(HostTail คอกหม","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":null},{"bill":"253237","name":"เตียง รุ่น Eden สี Natural","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":5390},{"bill":"258650","name":"เตียงนอนไม้สำหรับเด็ก รุ่น","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"258967","name":"Jarupat Oatkung(HostTail ค","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"259706","name":"🧸Bewty 🇯🇵","bucket":"ประกอบส่งด่วน","status":"เสร็จ","cat":"Install","amt":26520},{"bill":"260008","name":"THiTiPorN","bucket":"ลูกค้าประกอบเอง","status":"เสร็จ","cat":"Hosttail","amt":19200},{"bill":"260218","name":"Numtong Panfun(HostTail คอ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"260615","name":"ชำระ50%  ✿ ɴ ɴ ɪ ᴄ ᴋ ᴋ ✿(H","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":50400},{"bill":"260462","name":"ชำระ50% TOP DG {iconsiam}(","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":40000},{"bill":"260813","name":"ᴳᵁᴷᴳᴵᴳ ◡̈(Bebeplayofficial","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":24000},{"bill":"","name":"ฟอร์มแจ้งลูกค้า","bucket":"(ไม่มี)","status":"ค้าง","cat":"Install","amt":null},{"bill":"258967","name":"Jarupat Oatkung(HostTail ค","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":null},{"bill":"261057","name":"ชำระมัดจำ 11,563 มาแล้วรอช","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"261546","name":"ชำระ50%  /Wantanee Kulpeng","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"261559","name":"ชำระ50% /nuunนุ่น 💰(Host T","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":42000},{"bill":"258697","name":"Bee Jitsuda(HostTail คอกหม","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"261911","name":"Note Jakkrapan(Hosttail แห","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"262106","name":")(Host Tail) **ห้ามเลื่อนว","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":5400},{"bill":"262200","name":"คอกHomie/บงกชรัตน์ เชิดชู(","bucket":"จองคิวติดตั้ง","status":"เสร็จ","cat":"Install","amt":10240},{"bill":"262329","name":"Jane(Hosttail แหล่งรวมเฟอร","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"261546","name":"Wantanee Kulpeng(HostTail ","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":null},{"bill":"260615","name":"ชำระ50%  ✿ ɴ ɴ ɪ ᴄ ᴋ ᴋ ✿(H","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":50400},{"bill":"263024","name":"ชำระ50%/first(Bebeplayoffi","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":45500},{"bill":"262335","name":"262338/เตียงนอนไม้สำหรับเด","bucket":"ประกอบส่งด่วน","status":"เสร็จ","cat":"Install","amt":7500},{"bill":"260813","name":"ᴳᵁᴷᴳᴵᴳ ◡̈(Bebeplayofficial","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Bebeplay","amt":24000},{"bill":"260813","name":"ᴳᵁᴷᴳᴵᴳ ◡̈(Bebeplayofficial","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Bebeplay","amt":24000},{"bill":"263287","name":"Vis Surat(HostTail คอกหมา ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"263451","name":"✿*GARN*✿(Bebeplayofficial)","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":47000},{"bill":"263194","name":"Pan Nabhak(HostTail คอกหมา","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"263857","name":"เตียง รุ่น Luna/Rinlita Ak","bucket":"จองคิวติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"264177","name":"Aun Blueuma(Bebeplay)/ชำระ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":7000},{"bill":"264183","name":"คอกกั้นเด็ก 4in1/Color Piz","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Install","amt":250},{"bill":"263835","name":"KEERATI...❥⚡︎(Host Tail)/ ","bucket":"จองคิวติดตั้ง","status":"เสร็จ","cat":"Hosttail","amt":null},{"bill":"264354","name":"Ploypailin MacRae(Bebeplay","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":13500},{"bill":"264192","name":"Jook Jook(Host Tail)/ ชำระ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":30000},{"bill":"260813","name":"ᴳᵁᴷᴳᴵᴳ ◡̈(Bebeplayofficial","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Bebeplay","amt":24000},{"bill":"251705","name":"GJd.(Bebeplayofficial)/ที่","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Install","amt":4545},{"bill":"264242","name":"264244/Arosha 🤍(Bebeplayof","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"260462","name":"ชำระ50% TOP DG {iconsiam}(","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":40000},{"bill":"266020","name":"Nuntiporn Fern Saejia(Host","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"265867","name":"เตียง Eden/Kelly(Bebeplayo","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":null},{"bill":"253088","name":"4995 / Im(Bebeplayofficial","bucket":"ปิดงานติดตั้ง","status":"เสร็จ","cat":"Install","amt":5490},{"bill":"266275","name":"Katie S 🍾(Host Tail)/ชำระ5","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":30000},{"bill":"265762","name":"Risa🤍🧿🦅(Hosttail)/ยอด25000","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"266669","name":"Preedeeprompan Supicha(Hos","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"267274","name":"Kritsada(Host Tail) / **ห้","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":22850},{"bill":"260615","name":"ชำระ50%  ✿ ɴ ɴ ɪ ᴄ ᴋ ᴋ ✿(H","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":50400},{"bill":"265762","name":"Risa🤍🧿🦅(Hosttail)","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":null},{"bill":"268281","name":"Akasit Doungmaln/**ห้ามเลื","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":23700},{"bill":"268463","name":"Natenapha(Host Tail)/**ห้า","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":54600},{"bill":"269255","name":"tong(Host Tail)/ชำระมัดจำม","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":11720},{"bill":"269355","name":"Mari(Host Tail)/**ห้ามเลื่","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":3800},{"bill":"","name":"C'chira Rin(Bebeplay)","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":null},{"bill":"269837","name":"Jook Jook(Host Tail)/ชำระม","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"269852","name":"Jeab(Host Tail)/ **ห้ามเลื","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":37000},{"bill":"271251","name":"Nicharee Neelapisit(HostTa","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"270084","name":"บ้านคุณพายดารา/ชำระ 5000","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"270316","name":"EVE,MUAY.S(Host Tail)/ชำระ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"270514","name":"Nappasorn PN(HostTail)/**ห","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"268760","name":"คอกกั้นเด็ก 7in1 รุ่น Homi","bucket":"รอเข้าติดตั้ง","status":"ค้าง","cat":"Install","amt":16290},{"bill":"271351","name":"Nacha Pair(Host Tail)/ชำระ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":22980},{"bill":"269255","name":"tong(Host Tail)/ชำระมัดจำม","bucket":"แจ้งปัญหาปูพื้น","status":"เสร็จ","cat":"Hosttail","amt":11720},{"bill":"271519","name":"O Signal(Host Tail)/ชำระมั","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"271596","name":"Wp.Tarn(Host Tail)/ชำระมัด","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":21260},{"bill":"272103","name":"Nueng(Bebeplayofficial)/ชำ","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":48100},{"bill":"271519","name":"O Signal(Host Tail)","bucket":"แจ้งปัญหาปูพื้น","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"272577","name":"Tukta Handy Craft(HostTail","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"272816","name":"uuvw(Host Tail)/ชำระมัดจำม","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":17825},{"bill":"260615","name":"ชำระ50%  ✿ ɴ ɴ ɪ ᴄ ᴋ ᴋ ✿(H","bucket":"แจ้งปัญหาปูพื้น","status":"ค้าง","cat":"Hosttail","amt":50400},{"bill":"272479","name":"Bambi :)(Bebeplayofficial)","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":null},{"bill":"273569","name":"Suling H.(Bebeplayofficial","bucket":"ปิดงานติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":17000},{"bill":"274136","name":"🅿️Prim๑🫧(Host Tail)/ชำระมั","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"271251","name":"Nicharee Neelapisit(HostTa","bucket":"แจ้งปัญหาปูพื้น","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"274420","name":"Deuce S.(Bebeplayofficial)","bucket":"รอเข้าติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":21000},{"bill":"272816","name":"uuvw(Host Tail","bucket":"แจ้งปัญหาปูพื้น","status":"ค้าง","cat":"Hosttail","amt":17825},{"bill":"269007","name":"โคมไฟ ส่องแสง(Bebeplay)","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Install","amt":21080},{"bill":"274770","name":"p.(Host Tail)/ชำระมัดจำมา ","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null},{"bill":"275230","name":"M-mie(Bebeplayofficial)/ชำ","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Bebeplay","amt":null},{"bill":"275311","name":"Smile.(Host Tail)/ชำระมัดจ","bucket":"จองคิวติดตั้ง","status":"ค้าง","cat":"Hosttail","amt":null}],"catsum":{"Hosttail":{"n":50,"done":10,"billed":21,"amt":629780},"Bebeplay":{"n":15,"done":3,"billed":12,"amt":318800},"Install":{"n":38,"done":29,"billed":23,"amt":215136}},"bucket":{"ปิดงานติดตั้ง":60,"จองคิวติดตั้ง":15,"แจ้งปัญหาปูพื้น":15,"ประกอบส่งด่วน":5,"ลูกค้าประกอบเอง":3,"(ไม่มี)":2,"รอเข้าติดตั้ง":2,"โทรคอนเฟิร์ม":1}};
+
+// ===== Broadcasts (Data Open Click CDP) =====
+const BC=[{"prod":"Eden","dd":"15/12/2025","recipients":42,"opened":22,"clicked":0,"openRate":52.4,"clickRate":0.0},{"prod":"เบาะขนมจีบ","dd":"23/12/2025","recipients":41,"opened":15,"clicked":0,"openRate":36.6,"clickRate":0.0},{"prod":"BabyCrib2in1","dd":"16/01/2026","recipients":135,"opened":42,"clicked":4,"openRate":31.1,"clickRate":3.0},{"prod":"Snowvy","dd":"20/01/2026","recipients":14,"opened":7,"clicked":0,"openRate":50.0,"clickRate":0.0},{"prod":"ที่กั้นเตียงCozyNest","dd":"02/02/2026","recipients":59,"opened":12,"clicked":0,"openRate":20.3,"clickRate":0.0},{"prod":"เครื่องดูดน้ำมูกHappyBreath","dd":"04/02/2026","recipients":124,"opened":45,"clicked":0,"openRate":36.3,"clickRate":0.0},{"prod":"Bebekim","dd":"20/02/2026","recipients":2072,"opened":605,"clicked":0,"openRate":29.2,"clickRate":0.0},{"prod":"เฟอร์นิเจอร์รวม","dd":"06/03/2026","recipients":2072,"opened":585,"clicked":49,"openRate":28.2,"clickRate":2.4},{"prod":"พื้นRoomyMat","dd":"10/03/2026","recipients":2072,"opened":517,"clicked":4,"openRate":25.0,"clickRate":0.2},{"prod":"พื้นRoomyMatคลิป2","dd":"25/03/2026","recipients":2074,"opened":539,"clicked":0,"openRate":26.0,"clickRate":0.0},{"prod":"พื้นRoomyMatรีวิวอินฟลู","dd":"11/04/2026","recipients":2074,"opened":529,"clicked":37,"openRate":25.5,"clickRate":1.8},{"prod":"Playtimeบ่อบอลพับเก็บได้","dd":"24/04/2026","recipients":2075,"opened":513,"clicked":3,"openRate":24.7,"clickRate":0.1},{"prod":"คอกHomieเทาขาว","dd":"28/04/2026","recipients":2075,"opened":568,"clicked":49,"openRate":27.4,"clickRate":2.4},{"prod":"โปรบุฟเฟ่ต์","dd":"25/05/2026","recipients":2075,"opened":495,"clicked":19,"openRate":23.9,"clickRate":0.9},{"prod":"โต๊ะตัวต่อBlockToy","dd":"16/06/2026","recipients":2075,"opened":440,"clicked":0,"openRate":21.2,"clickRate":0.0},{"prod":"ReviweRoomyMatอินฟลู","dd":"22/06/2026","recipients":2075,"opened":549,"clicked":0,"openRate":26.5,"clickRate":0.0},{"prod":"PlayspacePink","dd":"01/07/2026","recipients":2075,"opened":67,"clicked":1,"openRate":3.2,"clickRate":0.0},{"prod":"แผ่นรองคลานPVCรุ่นSquishyMat","dd":"07/07/2026","recipients":2075,"opened":530,"clicked":0,"openRate":25.5,"clickRate":0.0}];
+
+// ===== Broadcast Hosttail (LINE OA @hosttailofficial) =====
+const BCH_FRIENDS=3117;
+const BCH=[
+ {date:"18/03/2026",time:"10:30",prod:"บรอดแคสต์เริ่มแคมเปญ (18 มี.ค.)",sent:1937,opened:579,clicked:49},
+ {date:"19/03/2026",time:"14:30",prod:"บรอดแคสต์ 19 มี.ค.",sent:1921,opened:529,clicked:0},
+ {date:"21/03/2026",time:"12:30",prod:"บรอดแคสต์ 21 มี.ค.",sent:1915,opened:416,clicked:0},
+ {date:"22/03/2026",time:"14:20",prod:"Review บริการติดตั้ง",sent:1914,opened:258,clicked:0},
+ {date:"27/03/2026",time:"16:05",prod:"บรอดแคสต์ 27 มี.ค.",sent:1920,opened:510,clicked:0},
+ {date:"28/03/2026",time:"13:30",prod:"วิดีโอโปรโมต",sent:1915,opened:486,clicked:0},
+ {date:"04/04/2026",time:"15:00",prod:"ปล่อยเด็กๆวิ่งได้เต็มสปีด!",sent:1915,opened:480,clicked:43},
+ {date:"10/04/2026",time:"17:35",prod:"Happy Songkarn Day",sent:1915,opened:380,clicked:0},
+ {date:"11/04/2026",time:"14:30",prod:"Review แผ่นกันลื่น Beige 1.6cm",sent:1914,opened:214,clicked:39},
+ {date:"13/04/2026",time:"14:00",prod:"วิดีโอ LINE VOOM",sent:1905,opened:365,clicked:0},
+ {date:"15/04/2026",time:"13:30",prod:"วิ่งสุดแรงก็ไม่ลื่น",sent:1900,opened:161,clicked:0},
+ {date:"16/04/2026",time:"09:01",prod:"เปิดจองคิวติดตั้งแผ่นกันลื่น",sent:1896,opened:397,clicked:0},
+ {date:"21/04/2026",time:"13:40",prod:"#PetExpo2026 ลดโหด",sent:1897,opened:263,clicked:57},
+ {date:"01/05/2026",time:"10:21",prod:"Hosttail ตะลุยงาน Pet Expo 2026",sent:1968,opened:247,clicked:32},
+ {date:"03/05/2026",time:"11:30",prod:"FINE DINING PAWS",sent:2840,opened:613,clicked:0},
+ {date:"09/05/2026",time:"12:20",prod:"จัดห้องส่วนตัวเจ้าเด็ก full option",sent:3031,opened:338,clicked:0},
+ {date:"18/05/2026",time:"10:02",prod:"น้องเดินลื่น เสี่ยงข้อสะโพกพัง (Review)",sent:3027,opened:633,clicked:28},
+ {date:"01/06/2026",time:"11:30",prod:"วิ่งชน ขาไม่สะบัด — safestep 0.6cm",sent:3050,opened:320,clicked:0},
+ {date:"17/06/2026",time:"10:35",prod:"Review แผ่นรองกันลื่น 1.6cm",sent:3087,opened:274,clicked:0},
+ {date:"22/06/2026",time:"15:50",prod:"หมาเดินลื่น = ค่ารักษาหลักหมื่น",sent:3087,opened:364,clicked:0},
+ {date:"29/06/2026",time:"15:30",prod:"เปลี่ยนพื้นลื่น ให้เป็นเซฟโซน",sent:3083,opened:317,clicked:0},
+ {date:"02/07/2026",time:"13:30",prod:"ลงทะเบียน (สมาชิก)",sent:3090,opened:424,clicked:0},
+ {date:"03/07/2026",time:"15:40",prod:"มาเปลี่ยนพื้นลื่นเป็นพื้นนุ่ม",sent:3080,opened:243,clicked:0},
+ {date:"07/07/2026",time:"14:00",prod:"บรอดแคสต์วิดีโอ 07 ก.ค.",sent:3078,opened:280,clicked:0},
+ {date:"20/07/2026",time:"11:00",prod:"บรอดแคสต์วิดีโอ 20 ก.ค.",sent:3117,opened:200,clicked:0}
+];
+
+// ===== context (Direct Sale.xlsx) =====
+const D={"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07"],
+"month_total":{"2025-11":8431314,"2025-12":3281235,"2026-01":6415602,"2026-02":4451677,"2026-03":5316732,"2026-04":4004901,"2026-05":7556286,"2026-06":4750022,"2026-07":2780489},
+"store_rev":{"SH_bebeplay":19442207,"B2B":5725734,"FB_bebeplay":3349746,"SH_bebeshop":2672864,"LA_bebeplay":2132283,"Event BBB":1951434,"Health Care":1787432,"Cambodia":1745589,"LOA_hosttail":1450531,"LOA_bebeplay":1233989,"TT_bebeplay":1199589,"LA_hosttail":983845},
+"interest":{"คอกกั้นเด็ก":175,"เฟอร์นิเจอร์สำหรับเด็ก":97,"ของเล่นเสริมพัฒนาการ":67,"เก้าอี้ทานข้าว":47,"เบาะรองคลาน":32,"ขนมเสริมพัฒนาการ":23,"อุปกรณ์ทานข้าว":9},
+"campaign":{"Bebekim":605,"เฟอร์นิเจอร์รวม":588,"พื้นRoomyMat คลิป2":539,"พื้นRoomyMat รีวิวอินฟลู":529,"พื้นRoomyMat":517,"HappyBreath":45,"BabyCrib2in1":43}};
+
+const baht=v=>'฿'+Math.round(v).toLocaleString();
+const k=v=>v>=1e6?(v/1e6).toFixed(2)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':String(Math.round(v));
+Chart.defaults.font.family="'Prompt','Nunito',sans-serif";Chart.defaults.font.size=11.5;Chart.defaults.color='#718096';
+const ggrid=()=>({grid:{color:'#eef0f4'},ticks:{callback:v=>k(v)}});
+function pctLbl(tot){return {id:'pl'+Math.random().toString(36).slice(2,8),afterDatasetsDraw(c){const ctx=c.ctx,m=c.getDatasetMeta(0);if(!m||!m.data)return;ctx.save();ctx.textAlign='center';ctx.font="700 10px 'Prompt'";m.data.forEach((bar,i)=>{const t=tot[i];if(t==null||t<=0)return;const p=tot[i-1];if(i>0&&p>0){const d=(t-p)/p*100,up=d>=0;ctx.fillStyle=up?'#2EB888':'#E84878';const y=c.scales.y.getPixelForValue(t);ctx.fillText((up?'▲+':'▼')+Math.round(d)+'%',bar.x,Math.max(y-8,11));}});ctx.restore();}};}
+const PALETTE=['#7E68F0','#5AACCF','#2EB888','#FFB17A','#E84878','#7EC8E3','#FFB3C6','#6249D6','#3A90BB','#4ECFA0','#F6A700','#ADE5F9'];
+const CH={};
+function mk(id,cfg){if(CH[id])CH[id].destroy();CH[id]=new Chart(document.getElementById(id),cfg);}
+
+// ===== filter range =====
+let fromM='2024-01', toM=ALLM[ALLM.length-1];
+const selMonths=()=>ALLM.filter(m=>m>=fromM&&m<=toM);
+const sel26=()=>selMonths().filter(m=>M26.includes(m));
+const selMem=()=>selMonths().filter(m=>MEMM.includes(m));
+const svcSel=()=>sel26().filter(m=>SVC.real.includes(m));
+const svcFull=()=>svcSel().filter(m=>!PARTIAL[m]);
+
+// tabs
+const TABS=[['overview','📊 ภาพรวม'],['memberschoco','👥 สมาชิก Choco'],['broadcast','📣 Choco CDP'],['bchost','🐾 Broadcast Hosttail'],['directsale','💚 Direct Sale'],['target','🛠️ บริการปูพื้น'],['install','🔧 บริการติดตั้ง'],['preg','🤰 Plan คนท้อง'],['funnel','🔻 Funnel'],['context','🏢 ยอดรวมบริษัท'],['tactics','📋 กลยุทธ์']];
+const TIME_TABS=new Set(['overview','memberschoco','directsale','target','broadcast']);
+const tabsEl=document.getElementById('tabs');
+TABS.forEach(([id,l])=>{const b=document.createElement('button');b.className='tab'+(id==='overview'?' on':'');b.textContent=l;b.onclick=()=>showTab(id,b);tabsEl.appendChild(b);});
+function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.dataset.tab===id));document.getElementById('filterbar').classList.toggle('hide',!TIME_TABS.has(id));window.scrollTo({top:0,behavior:'smooth'});}
+
+// from/to selects
+const fromSel=document.getElementById('fromSel'),toSel=document.getElementById('toSel');
+ALLM.forEach(m=>{fromSel.add(new Option(fmt(m).replace('*',''),m));toSel.add(new Option(fmt(m).replace('*',''),m));});
+fromSel.value=fromM;toSel.value=toM;
+fromSel.onchange=()=>{fromM=fromSel.value;if(fromM>toM){toM=fromM;toSel.value=toM;}render();};
+toSel.onchange=()=>{toM=toSel.value;if(toM<fromM){fromM=toM;fromSel.value=fromM;}render();};
+function qy(y){fromM=y+'-01';toM=(y==='2026'?ALLM[ALLM.length-1]:y+'-12');fromSel.value=fromM;toSel.value=toM;render();}
+function qyAll(){fromM='2024-01';toM=ALLM[ALLM.length-1];fromSel.value=fromM;toSel.value=toM;render();}
+
+// target line plugin (scoped)
+const tgtLine={id:'tgt',afterDraw(c){const y=c.scales.y.getPixelForValue(300000);if(isNaN(y))return;const{left,right}=c.chartArea,x=c.ctx;x.save();x.strokeStyle='#E84878';x.setLineDash([6,5]);x.lineWidth=2;x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();x.fillStyle='#E84878';x.font='700 11px Prompt';x.fillText('เป้า 300K',right-58,y-6);x.restore();}};
+
+// barlist helper
+function barlist(el,entries,fmtv,colorByIdx){const max=Math.max(1,...entries.map(e=>e[1]));el.innerHTML=entries.map(([n,v],i)=>`<div class="r"><div class="nm" title="${n}">${n}</div><div class="track"><div class="fill" style="width:${v/max*100}%;background:${PALETTE[i%PALETTE.length]}"></div></div><div class="vn">${fmtv(v)}</div></div>`).join('');}
+function aggDict(months,key){const a={};months.forEach(m=>{const o=MEM.byMonth[m]&&MEM.byMonth[m][key];if(o)for(const kk in o)a[kk]=(a[kk]||0)+o[kk];});return Object.entries(a).sort((x,y)=>y[1]-x[1]);}
+
+function render(){
+  const M=selMonths();
+  // ---- overview combo (2026) ----
+  const S=sel26(),SL=S.map(fmt);
+  mk('comboChart',{type:'bar',plugins:[tgtLine,pctLbl(S.map(dsTot))],data:{labels:SL,datasets:[
+    {label:'Direct Sale (LINE OA รวม)',data:S.map(dsTot),backgroundColor:CLR_DIRECT,borderRadius:6},
+    {label:'บริการปูพื้น',data:S.map(m=>SVC.total[m]??null),backgroundColor:'#7E68F0',borderRadius:6}
+  ]},options:{layout:{padding:{top:18}},plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw||0)}}},scales:{y:{...ggrid(),suggestedMax:580000},x:{grid:{display:false}}}}});
+  const dsSum=S.reduce((s,m)=>s+dsTot(m),0), svcSum=S.reduce((s,m)=>s+(SVC.total[m]||0),0);
+  document.getElementById('ov-ds').textContent=baht(dsSum);
+  document.getElementById('ov-svc').textContent=baht(svcSum);
+  document.getElementById('ov-sum').textContent='· Direct Sale '+baht(dsSum)+' · บริการ '+baht(svcSum);
+
+  // ---- members ----
+  const MM=selMem(),ML=MM.map(fmt);
+  const _is=document.getElementById('memIntSel'); const INTSEL=(_is&&_is.value)?_is.value:'__all';
+  const memVal=m=>INTSEL==='__all'?MEM.byMonth[m].n:(MEM.byMonth[m].int[INTSEL]||0);
+  const allTot=MEMM.reduce((s,m)=>s+memVal(m),0);
+  const _mn=document.getElementById('memIntNote'); if(_mn)_mn.textContent=INTSEL==='__all'?'(สมาชิกทั้งหมด)':('เฉพาะสนใจ "'+INTSEL+'" · รวมทุกช่วง '+allTot.toLocaleString()+' คน');
+  const _mt=document.getElementById('m-total'); if(_mt)_mt.textContent=(INTSEL==='__all'?MEM.total:allTot).toLocaleString();
+  const newArr=MM.map(memVal);
+  const firstIdx=MEMM.indexOf(MM[0]); let base=0; for(let i=0;i<firstIdx;i++)base+=memVal(MEMM[i]);
+  let cc=base; const cumArr=newArr.map(n=>{cc+=n;return cc;});
+  const added=newArr.reduce((a,b)=>a+b,0), avgNew=MM.length?added/MM.length:0;
+  let gs=[],pc=base; newArr.forEach(n=>{if(pc>0)gs.push(n/pc*100);pc+=n;});
+  const avgGrow=gs.length?gs.reduce((a,b)=>a+b,0)/gs.length:0;
+  document.getElementById('ov-mem').textContent='+'+added.toLocaleString();
+  document.getElementById('ov-mem-sub').textContent=ML.length?fmt(MM[0])+'–'+fmt(MM[MM.length-1]):'-';
+  {const _fy=ym=>{const[y,mo]=ym.split('-');return MN[+mo-1]+' '+y;},_ms=MEM.months,_a=_fy(_ms[0]),_b=_fy(_ms[_ms.length-1]);
+   document.getElementById('ov-memtot').textContent=MEM.total.toLocaleString();
+   document.getElementById('ov-memtot-sub').textContent='ตั้งแต่ '+_a;
+   document.getElementById('m-total-sub').textContent=_a+' – '+_b;}
+  document.getElementById('m-add').textContent='+'+added.toLocaleString();
+  document.getElementById('m-range').textContent=ML.length?fmt(MM[0])+' – '+fmt(MM[MM.length-1]):'-';
+  document.getElementById('m-avg').textContent=Math.round(avgNew).toLocaleString()+' คน';
+  document.getElementById('m-grow').textContent=avgGrow.toFixed(1)+'%';
+  // monthly member list — follows selected filter (year/range)
+  const yrs=[...new Set(MM.map(m=>m.slice(0,4)))];
+  document.getElementById('memYr').textContent=(yrs.length===1?'ปี '+yrs[0]:'ช่วงที่เลือก');
+  let mrows='';
+  MM.forEach((m,i)=>{mrows+=`<div class="row"><span>${MN[+m.slice(5)-1]} ${m.slice(0,4)}</span><b>+${newArr[i].toLocaleString()} คน <span style="color:var(--t-muted);font-weight:500;font-size:11px">(สะสม ${cumArr[i].toLocaleString()})</span></b></div>`;});
+  mrows+=`<div class="row" style="border-top:2px solid #e5e8ef;border-bottom:none;margin-top:4px;padding-top:9px"><span style="font-weight:700">รวม${yrs.length===1?'ปี '+yrs[0]:'ช่วงที่เลือก'}</span><b style="color:var(--lav-600)">+${added.toLocaleString()} คน</b></div>`;
+  document.getElementById('memMonthList').innerHTML=mrows||'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูล</div>';
+  const memCfg=cv=>({data:{labels:ML,datasets:[
+      {type:'bar',label:'สมาชิกใหม่',data:newArr,backgroundColor:'#7EC8E3',borderRadius:5,yAxisID:'y',order:2},
+      {type:'line',label:'สะสม',data:cumArr,borderColor:'#7E68F0',backgroundColor:'rgba(126,104,240,.08)',fill:true,tension:.3,borderWidth:2.5,pointRadius:2,yAxisID:'y1',order:1}
+    ]},options:{plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString()+' คน'}}},scales:{y:{position:'left',grid:{color:'#eef0f4'},title:{display:true,text:'ใหม่/เดือน'}},y1:{position:'right',grid:{display:false},title:{display:true,text:'สะสม'}},x:{grid:{display:false}}}}});
+  mk('memChart',memCfg());mk('ovMemChart',memCfg());
+  barlist(document.getElementById('memInterest'),aggDict(MM,'int').filter(e=>e[0]!=='(ไม่ระบุ)').slice(0,10),v=>v.toLocaleString());
+  barlist(document.getElementById('memSpend'),aggDict(MM,'spInt').filter(e=>e[0]!=='(ไม่ระบุ)').slice(0,10),v=>baht(v));
+  barlist(document.getElementById('memProv'),aggDict(MM,'prov').filter(e=>e[0]!=='(ไม่ระบุ)').slice(0,8),v=>v.toLocaleString());
+  const chE=aggDict(MM,'ch').filter(e=>e[0]!=='(ไม่ระบุ)').slice(0,8);
+  mk('memChan',{type:'doughnut',data:{labels:chE.map(e=>e[0]),datasets:[{data:chE.map(e=>e[1]),backgroundColor:chE.map((e,i)=>appColor(e[0],i)),borderWidth:2,borderColor:'#fff'}]},options:{cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:12,font:{size:10.5}}},tooltip:{callbacks:{label:c=>c.label+': '+c.raw}}}}});
+
+  // ---- warranty registrations (รับประกัน) ----
+  if(document.getElementById('warrChart')){
+    const WK=Object.keys(WARR);
+    const WM=selMonths().filter(m=>WK.includes(m)); const WL=WM.map(fmt);
+    const wAll=WK.reduce((s,m)=>s+WARR[m],0);
+    const wNew=WM.map(m=>WARR[m]);
+    const wFirst=WK.indexOf(WM[0]); let wbase=0; for(let i=0;i<wFirst;i++)wbase+=WARR[WK[i]];
+    let wc=wbase; const wCum=wNew.map(n=>{wc+=n;return wc;});
+    const wAdded=wNew.reduce((a,b)=>a+b,0), wAvg=WM.length?wAdded/WM.length:0;
+    const wyrs=[...new Set(WM.map(m=>m.slice(0,4)))];
+    document.getElementById('w-total').textContent=wAll.toLocaleString()+' คน';
+    document.getElementById('w-add').textContent='+'+wAdded.toLocaleString();
+    document.getElementById('w-range').textContent=WL.length?fmt(WM[0])+' – '+fmt(WM[WM.length-1]):'-';
+    document.getElementById('w-avg').textContent=Math.round(wAvg).toLocaleString()+' คน';
+    document.getElementById('warrYr').textContent=WM.length?(wyrs.length===1?'ปี '+wyrs[0]:'ช่วงที่เลือก'):'';
+    let wrows='';
+    WM.forEach((m,i)=>{wrows+=`<div class="row"><span>${MN[+m.slice(5)-1]} ${m.slice(0,4)}</span><b>+${wNew[i].toLocaleString()} คน <span style="color:var(--t-muted);font-weight:500;font-size:11px">(สะสม ${wCum[i].toLocaleString()})</span></b></div>`;});
+    wrows+=`<div class="row" style="border-top:2px solid #e5e8ef;border-bottom:none;margin-top:4px;padding-top:9px"><span style="font-weight:700">รวมช่วงที่เลือก</span><b style="color:var(--lav-600)">+${wAdded.toLocaleString()} คน</b></div>`;
+    document.getElementById('warrMonthList').innerHTML=wrows||'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูล</div>';
+    mk('warrChart',{data:{labels:WL,datasets:[
+      {type:'bar',label:'ลงทะเบียนรับประกัน',data:wNew,backgroundColor:'#2EB888',borderRadius:5,yAxisID:'y',order:2},
+      {type:'line',label:'สะสม',data:wCum,borderColor:'#7E68F0',backgroundColor:'rgba(126,104,240,.08)',fill:true,tension:.3,borderWidth:2.5,pointRadius:2,yAxisID:'y1',order:1}
+    ]},options:{plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString()+' คน'}}},scales:{y:{position:'left',grid:{color:'#eef0f4'},title:{display:true,text:'ราย/เดือน'}},y1:{position:'right',grid:{display:false},title:{display:true,text:'สะสม'}},x:{grid:{display:false}}}}});
+  }
+
+  // ---- direct sale tab ----
+  const DL=S.map(fmt);
+  mk('dsChart',{type:'bar',plugins:[pctLbl(S.map(dsTot))],data:{labels:DL,datasets:[
+    {label:'Bebeplay LOA (ทั้งหมด)',data:S.map(dsBebe),backgroundColor:'#5AACCF',borderRadius:5,stack:'s'},
+    {label:'Hosttail ปูพื้น (LOA)',data:S.map(dsHost),backgroundColor:'#F6841F',borderRadius:5,stack:'s'}
+  ]},options:{layout:{padding:{top:18}},plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw)+((DS_HOST_PEND[S[c.dataIndex]]&&c.datasetIndex===1)?' (รอ sync)':'')}}},scales:{y:{...ggrid(),stacked:true},x:{stacked:true,grid:{display:false}}}}});
+  let sb=0,sh=0;S.forEach(m=>{sb+=dsBebe(m);sh+=dsHost(m);});
+  mk('dsBrandChart',{type:'doughnut',data:{labels:['Bebeplay LOA','Hosttail ปูพื้น LOA'],datasets:[{data:[sb,sh],backgroundColor:['#5AACCF','#F6841F'],borderWidth:2,borderColor:'#fff'}]},options:{cutout:'58%',plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.label+': '+baht(c.raw)+' ('+Math.round(c.raw/((sb+sh)||1)*100)+'%)'}}}}});
+  document.getElementById('ds-tot').textContent=baht(sb+sh);
+  document.getElementById('ds-bebe').textContent=baht(sb);
+  document.getElementById('ds-host').textContent=baht(sh);
+  // Direct Sale: floor vs non-floor (ปูพื้น = LOA_bebeplay floor + LOA_hosttail floor ; อื่นๆ = Bebeplay LOA ที่ไม่ใช่ปูพื้น)
+  let floorPart=0,nonFloor=0;
+  S.forEach(m=>{const lbFloor=(SVC.chan[m]||{}).LOA_bebeplay||0;floorPart+=lbFloor+dsHost(m);nonFloor+=Math.max(0,dsBebe(m)-lbFloor);});
+  const dsAll=floorPart+nonFloor;
+  mk('dsMixChart',{type:'doughnut',data:{labels:['ปูพื้น (LDS)','สินค้าอื่นๆ'],datasets:[{data:[floorPart,nonFloor],backgroundColor:['#2EB888','#ADE5F9'],borderWidth:2,borderColor:'#fff'}]},options:{cutout:'58%',plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.label+': '+baht(c.raw)+' ('+Math.round(c.raw/(dsAll||1)*100)+'%)'}}}}});
+  document.getElementById('dsMixDesc').textContent='ปูพื้น '+baht(floorPart)+' ('+Math.round(floorPart/(dsAll||1)*100)+'%) · สินค้าอื่น '+baht(nonFloor);
+  // per-month Direct Sale breakdown (side table)
+  const dHd=t=>`<th style="padding:7px 12px;font-size:12px;color:var(--lav-600);border-bottom:2px solid #eef0f4;text-align:right;white-space:nowrap">${t}</th>`;
+  const dCell=v=>`<td style="padding:6px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f2f3f7"><b>${baht(v)}</b></td>`;
+  const dLab=(dot,txt,bg,bd)=>`<td style="position:sticky;left:0;background:${bg};padding:6px 12px;font-size:12.5px;font-weight:${bd?700:400};white-space:nowrap;${bd?'border-top:2px solid #e5e8ef;':'border-bottom:1px solid #f2f3f7'}z-index:1">${dot?`<i style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:${dot};margin-right:6px\"></i>`:''}${txt}</td>`;
+  let dHead=`<th style="position:sticky;left:0;background:#faf9fe;text-align:left;padding:7px 12px;font-size:12px;color:var(--lav-600);border-bottom:2px solid #eef0f4;z-index:2">ช่องทาง</th>`+S.map(m=>dHd(fmt(m))).join('');
+  let dRows=`<tr>${dLab('#5AACCF','LINE OA Bebeplay','#fff')}${S.map(m=>dCell(dsBebe(m))).join('')}</tr>`;
+  dRows+=`<tr>${dLab('#F6841F','LINE OA Hosttail (ปูพื้น)','#fff')}${S.map(m=>dCell(dsHost(m))).join('')}</tr>`;
+  dRows+=`<tr>${dLab('','รวมเดือน','#f6f4fe',1)}${S.map(m=>`<td style="padding:7px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-top:2px solid #e5e8ef;background:#f6f4fe"><b style="color:var(--lav-600)">${baht(dsTot(m))}</b></td>`).join('')}</tr>`;
+  document.getElementById('dsMonthList').innerHTML=S.length?`<table style="border-collapse:collapse;min-width:100%"><thead><tr>${dHead}</tr></thead><tbody>${dRows}</tbody></table>`:'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูลในช่วงที่เลือก</div>';
+
+  // ---- บริการปูพื้น tab : brand-split + channel-split + gauge ----
+  const SM=svcSel(),SVL=SM.map(fmt);
+  // brand totals per month (by store): Hosttail / Bebeplay / Event
+  const brandMonth=b=>SM.map(m=>{let s=0;Object.entries(SVC.chan[m]||{}).forEach(([c,v])=>{if(brandOf(c)===b)s+=v;});return s;});
+  const bH=brandMonth('Hosttail'),bB=brandMonth('Bebeplay'),bE=brandMonth('Event');
+  const monthTot=SM.map((m,i)=>bH[i]+bB[i]+bE[i]);
+  // plugin: total label above each stacked bar
+  const totLbl={id:'totLbl',afterDatasetsDraw(c){const ctx=c.ctx,meta=c.getDatasetMeta(0);if(!meta.data)return;ctx.save();ctx.textAlign='center';meta.data.forEach((bar,i)=>{const t=monthTot[i];if(t<=0)return;const y=c.scales.y.getPixelForValue(t);ctx.font='700 11px Prompt';ctx.fillStyle='#2D3748';ctx.fillText(k(t),bar.x,y-6);const p=monthTot[i-1];if(i>0&&p>0){const d=(t-p)/p*100,up=d>=0;ctx.font='700 10px Prompt';ctx.fillStyle=up?'#2EB888':'#E84878';ctx.fillText((up?'▲ +':'▼ ')+d.toFixed(0)+'%',bar.x,y-20);}});ctx.restore();}};
+  // channel order grouped by brand: Bebeplay (LINE OA อ่อน → FB เข้ม), Hosttail (LINE OA อ่อน → FB เข้ม), Event
+  const BORD=["LOA_bebeplay","FB_bebeplay","LOA_hosttail","FB_hosttail","Event Pet Expo"];
+  const CHLAB={"FB_hosttail":"FB Hosttail","LOA_hosttail":"LINE OA Hosttail","FB_bebeplay":"FB Bebeplay","LOA_bebeplay":"LINE OA Bebeplay","Event Pet Expo":"Event"};
+  mk('brandMonthChart',{type:'bar',plugins:[tgtLine,totLbl],data:{labels:SVL,datasets:BORD.map(ch=>({label:CHLAB[ch],data:SM.map(m=>(SVC.chan[m]||{})[ch]||0),backgroundColor:CHANC[ch],borderRadius:3,stack:'s'}))},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw),footer:items=>'รวม: '+baht(items.reduce((s,it)=>s+it.raw,0))}}},scales:{y:{...ggrid(),stacked:true,suggestedMax:500000},x:{stacked:true,grid:{display:false}}}}});
+  const totAll=monthTot.reduce((a,b)=>a+b,0),hAll=bH.reduce((a,b)=>a+b,0),bAll=bB.reduce((a,b)=>a+b,0),eAll=bE.reduce((a,b)=>a+b,0);
+  document.getElementById('sv-tot').textContent=baht(totAll);
+  document.getElementById('sv-host').textContent=baht(hAll);
+  document.getElementById('sv-bebe').textContent=baht(bAll);
+  document.getElementById('sv-host-sub').textContent='FB + LINE OA · '+(totAll?Math.round(hAll/totAll*100):0)+'% ของบริการ';
+  document.getElementById('sv-bebe-sub').textContent='FB + LINE OA · '+(totAll?Math.round(bAll/totAll*100):0)+'% ของบริการ';
+  document.getElementById('sv-sum').textContent='· รวม '+baht(totAll)+(eAll?(' · Event '+baht(eAll)):'');
+  // per-month channel breakdown table (side panel) — reuse CHLAB
+  const sHd=t=>`<th style="padding:7px 12px;font-size:12px;color:var(--lav-600);border-bottom:2px solid #eef0f4;text-align:right;white-space:nowrap">${t}</th>`;
+  const sCell=v=>`<td style="padding:6px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f2f3f7"><b style="color:var(--t-body)">${baht(v)}</b></td>`;
+  const sLab=(dot,txt,bg,bd)=>`<td style="position:sticky;left:0;background:${bg};padding:6px 12px;font-size:12.5px;font-weight:${bd?700:400};white-space:nowrap;${bd?'border-top:2px solid #e5e8ef;':'border-bottom:1px solid #f2f3f7'}z-index:1">${dot?`<i style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:${dot};margin-right:6px\"></i>`:''}${txt}</td>`;
+  const actCh=CHANS.filter(c=>SM.some(m=>(SVC.chan[m]||{})[c]));
+  let sHead=`<th style="position:sticky;left:0;background:#faf9fe;text-align:left;padding:7px 12px;font-size:12px;color:var(--lav-600);border-bottom:2px solid #eef0f4;z-index:2">ช่องทาง</th>`+SM.map(m=>sHd(fmt(m))).join('');
+  let sRows=actCh.map(c=>`<tr>${sLab(CHANC[c],CHLAB[c],'#fff')}${SM.map(m=>sCell((SVC.chan[m]||{})[c]||0)).join('')}</tr>`).join('');
+  sRows+=`<tr>${sLab('','รวมเดือน','#f6f4fe',1)}${SM.map(m=>{const t=Object.values(SVC.chan[m]||{}).reduce((a,b)=>a+b,0);return `<td style="padding:7px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-top:2px solid #e5e8ef;background:#f6f4fe"><b style="color:${t>=300000?'#2EB888':'var(--lav-600)'}">${baht(t)}</b></td>`;}).join('')}</tr>`;
+  document.getElementById('svMonthList').innerHTML=SM.length?`<table style="border-collapse:collapse;min-width:100%"><thead><tr>${sHead}</tr></thead><tbody>${sRows}</tbody></table>`:'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูลในช่วงที่เลือก</div>';
+  // channel split (orange/blue shades + violet event)
+  // brand proportion doughnut (Hosttail / Bebeplay / Event)
+  mk('svBrandPie',{type:'doughnut',data:{labels:['Hosttail','Bebeplay','Event'],datasets:[{data:[hAll,bAll,eAll],backgroundColor:[BRANDC.Hosttail,BRANDC.Bebeplay,BRANDC.Event],borderWidth:2,borderColor:'#fff'}]},options:{cutout:'58%',plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.label+': '+baht(c.raw)+' ('+Math.round(c.raw/((hAll+bAll+eAll)||1)*100)+'%)'}}}}});
+  // gauge
+  const fm=svcFull(),lm=fm[fm.length-1]||SM[SM.length-1]||"2026-05",fv=SVC.total[lm]||0,pct=Math.round(fv/300000*100);
+  mk('gauge',{type:'doughnut',data:{datasets:[{data:[Math.min(fv,300000),Math.max(0,300000-fv),0],backgroundColor:[fv>=300000?'#2EB888':'#7EC8E3','#eef0f4'],borderWidth:0,cutout:'75%'}]},options:{plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+  const gp=document.getElementById('g-pct');gp.textContent=pct+'%';gp.style.color=fv>=300000?'#2EB888':'#2D3748';
+  document.getElementById('g-pct2').textContent=pct+'%';document.getElementById('g-pct2').style.color=fv>=300000?'#2EB888':'#2D3748';
+  document.getElementById('g-desc').textContent='เดือนเต็มล่าสุด: '+fmt(lm).replace('*','');
+  document.getElementById('g-desc2').textContent=fmt(lm).replace('*','')+' = '+baht(fv);
+  document.getElementById('g-note').innerHTML='<div class="row"><span>เป้าหมาย</span><b>฿300,000</b></div>'+SM.slice().reverse().map(m=>`<div class="row"><span>${fmt(m)}</span><b style="color:${SVC.total[m]>=300000?'#2EB888':'#2D3748'}">${baht(SVC.total[m]||0)}</b></div>`).join('');
+  // LOA_Hosttail รายเดือน (ผูกฟิลเตอร์เดือน) [month,floor,other]
+  const HTMON=[["2025-11",0,60408],["2025-12",0,51132],["2026-01",0,38419],["2026-02",0,57088],["2026-03",109600,88664],["2026-04",47400,36393],["2026-05",348670,113391],["2026-06",114315,80763],["2026-07",361150,34088]];
+  const hte=document.getElementById('dsHTMonthList');
+  if(hte){
+    const HM=HTMON.filter(([m])=>S.includes(m));
+    const hHd=t=>`<th style="padding:7px 12px;font-size:12px;color:#E8730C;border-bottom:2px solid #eef0f4;text-align:right;white-space:nowrap">${t}</th>`;
+    const hCell=v=>`<td style="padding:6px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f2f3f7"><b>${baht(v)}</b></td>`;
+    const hLab=(dot,txt,bg,bd)=>`<td style="position:sticky;left:0;background:${bg};padding:6px 12px;font-size:12.5px;font-weight:${bd?700:400};white-space:nowrap;${bd?'border-top:2px solid #e5e8ef;':'border-bottom:1px solid #f2f3f7'}z-index:1">${dot?`<i style=\"display:inline-block;width:9px;height:9px;border-radius:50%;background:${dot};margin-right:6px\"></i>`:''}${txt}</td>`;
+    let hHead=`<th style="position:sticky;left:0;background:#fff7f0;text-align:left;padding:7px 12px;font-size:12px;color:#E8730C;border-bottom:2px solid #eef0f4;z-index:2">ช่องทาง</th>`+HM.map(([m])=>hHd(fmt(m))).join('');
+    let hRows=`<tr>${hLab('#F6841F','ปูพื้น (LDS)','#fff')}${HM.map(([m,f,o])=>hCell(f)).join('')}</tr>`;
+    hRows+=`<tr>${hLab('#5AACCF','สินค้าอื่น','#fff')}${HM.map(([m,f,o])=>hCell(o)).join('')}</tr>`;
+    hRows+=`<tr>${hLab('','รวมเดือน','#fff7f0',1)}${HM.map(([m,f,o])=>`<td style="padding:7px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-top:2px solid #e5e8ef;background:#fff7f0"><b style="color:#E8730C">${baht(f+o)}</b></td>`).join('')}</tr>`;
+    hte.innerHTML=HM.length?`<table style="border-collapse:collapse;min-width:100%"><thead><tr>${hHead}</tr></thead><tbody>${hRows}</tbody></table>`:'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูลในช่วงที่เลือก</div>';
+  }
+}
+
+// context + funnel — static
+function statics(){
+  const ML=D.months.map(fmt);
+  mk('totalChart',{type:'line',data:{labels:ML,datasets:[{label:'ยอดรวม',data:D.months.map(m=>D.month_total[m]),borderColor:'#7E68F0',backgroundColor:'rgba(126,104,240,.10)',tension:.35,fill:true,borderWidth:2.5,pointRadius:3}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>baht(c.raw)}}},scales:{y:ggrid(),x:{grid:{display:false}}}}});
+  barlist(document.getElementById('interestList'),Object.entries(D.interest),v=>v.toLocaleString());
+  const ce=Object.entries(D.campaign);
+  mk('campChart',{type:'bar',data:{labels:ce.map(e=>e[0]),datasets:[{data:ce.map(e=>e[1]),backgroundColor:'#7EC8E3',borderRadius:6}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef0f4'}},y:{grid:{display:false}}}}});
+  const sm=Math.max(...Object.values(D.store_rev)),dir=['LOA_hosttail','LOA_bebeplay','FB_bebeplay'];
+  storeList.innerHTML=Object.entries(D.store_rev).slice(0,10).map(([n,v])=>{const isD=dir.includes(n),c=isD?'#7E68F0':'#ADE5F9';return `<div class="r"><div class="nm" title="${n}">${isD?'⭐ ':''}${n}</div><div class="track"><div class="fill" style="width:${v/sm*100}%;background:${c}"></div></div><div class="vn">${k(v)}</div></div>`}).join('');
+  const avgClose=Math.round((14+18)/2);
+  const F=[{n:'ได้รับ Broadcast',v:1091,real:1,meta:'ฐานสมาชิก'},{n:'เปิดอ่าน',v:1091,real:1,meta:'100%'},{n:'คลิก / สนใจ',v:100,real:1,meta:'CTR 9.2%'},{n:'ตอบกลับ (ทัก)',v:55,real:0,meta:'เป้า ~55%'},{n:'Lead ใหม่',v:38,real:0,meta:'เป้า'},{n:'โทร Follow Up',v:30,real:0,meta:'เป้า'},{n:'ส่งใบเสนอราคา',v:24,real:0,meta:'เป้า'},{n:'นัดวัดพื้นที่',v:18,real:0,meta:'เป้า'},{n:'ปิดการขาย (งานจริง)',v:avgClose,real:1,meta:'เฉลี่ย/เดือน'}];
+  const fmax=1091,cols=['#1A4F7A','#3A90BB','#5AACCF','#7EC8E3','#9DD6EC','#B8E2F3'];
+  funnel.innerHTML=F.map((s,i)=>{const w=Math.max(s.v/fmax*100,7),bg=s.real?(i===F.length-1?'#2EB888':cols[Math.min(i,cols.length-1)]):'',cls='fbar'+(s.real?'':' pending'),txt=s.real?s.v.toLocaleString():s.v.toLocaleString()+' (เป้า)';return `<div class="fstage"><div class="flabel">${s.n}</div><div class="fbar-wrap"><div class="${cls}" style="width:0;background:${bg}" data-w="${w}">${txt}</div></div><div class="fmeta">${s.meta}</div></div>`}).join('');
+  setTimeout(()=>document.querySelectorAll('.fbar').forEach(b=>b.style.width=b.dataset.w+'%'),200);
+  // ---- broadcast detail (ผูกฟิลเตอร์ช่วงเวลา) ----
+  document.getElementById('bcSel').onchange=renderBC;
+  renderBC();
+  // ---- Broadcast → Repurchase (กระทบ CDP กับ JST ด้วย MobileNo) ----
+  const CDPRP=[{"prod":"Eden","dd":"15/12/2025","recip":42,"opened":22,"buy":2,"buyOpen":1,"convRecip":4.8,"convOpen":4.5},{"prod":"เบาะขนมจีบ","dd":"23/12/2025","recip":41,"opened":15,"buy":2,"buyOpen":0,"convRecip":4.9,"convOpen":0.0},{"prod":"BabyCrib2in1","dd":"16/01/2026","recip":135,"opened":42,"buy":3,"buyOpen":0,"convRecip":2.2,"convOpen":0.0},{"prod":"Snowvy","dd":"20/01/2026","recip":14,"opened":7,"buy":0,"buyOpen":0,"convRecip":0.0,"convOpen":0.0},{"prod":"ที่กั้นเตียงCozyNest","dd":"02/02/2026","recip":59,"opened":12,"buy":2,"buyOpen":0,"convRecip":3.4,"convOpen":0.0},{"prod":"เครื่องดูดน้ำมูกHappyBreath","dd":"04/02/2026","recip":124,"opened":45,"buy":5,"buyOpen":4,"convRecip":4.0,"convOpen":8.9},{"prod":"Bebekim","dd":"20/02/2026","recip":2072,"opened":605,"buy":24,"buyOpen":9,"convRecip":1.2,"convOpen":1.5},{"prod":"เฟอร์นิเจอร์รวม","dd":"06/03/2026","recip":2072,"opened":585,"buy":20,"buyOpen":10,"convRecip":1.0,"convOpen":1.7},{"prod":"พื้นRoomyMat","dd":"10/03/2026","recip":2072,"opened":517,"buy":20,"buyOpen":9,"convRecip":1.0,"convOpen":1.7},{"prod":"พื้นRoomyMatคลิป2","dd":"25/03/2026","recip":2074,"opened":539,"buy":18,"buyOpen":5,"convRecip":0.9,"convOpen":0.9},{"prod":"พื้นRoomyMatรีวิวอินฟลู","dd":"11/04/2026","recip":2074,"opened":529,"buy":15,"buyOpen":4,"convRecip":0.7,"convOpen":0.8},{"prod":"Playtimeบ่อบอลพับเก็บได้","dd":"24/04/2026","recip":2075,"opened":513,"buy":12,"buyOpen":4,"convRecip":0.6,"convOpen":0.8},{"prod":"คอกHomieเทาขาว","dd":"28/04/2026","recip":2075,"opened":568,"buy":12,"buyOpen":4,"convRecip":0.6,"convOpen":0.7},{"prod":"โปรบุฟเฟ่ต์","dd":"25/05/2026","recip":2075,"opened":495,"buy":10,"buyOpen":6,"convRecip":0.5,"convOpen":1.2},{"prod":"โต๊ะตัวต่อBlockToy","dd":"16/06/2026","recip":2075,"opened":440,"buy":6,"buyOpen":3,"convRecip":0.3,"convOpen":0.7},{"prod":"ReviweRoomyMatอินฟลู","dd":"22/06/2026","recip":2075,"opened":549,"buy":5,"buyOpen":2,"convRecip":0.2,"convOpen":0.4}];
+  if(document.getElementById('rp-recip')){
+    const tr=CDPRP.reduce((s,e)=>s+e.recip,0),tb=CDPRP.reduce((s,e)=>s+e.buy,0),to=CDPRP.reduce((s,e)=>s+e.opened,0),tbo=CDPRP.reduce((s,e)=>s+e.buyOpen,0);
+    document.getElementById('rp-recip').textContent=tr.toLocaleString();
+    document.getElementById('rp-buy').textContent=tb.toLocaleString()+' ราย';
+    document.getElementById('rp-conv').textContent=(tb/tr*100).toFixed(1)+'% ของผู้รับ';
+    document.getElementById('rp-buyopen').textContent=tbo.toLocaleString()+' ราย';
+    document.getElementById('rp-convopen').textContent=(tbo/to*100).toFixed(1)+'% ของคนเปิดอ่าน';
+    const RPDETAIL={"16/01/2026":[["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["Playtime เก้าอี้ทานข้าวเด็ก รุ่น Buddy สีเ",1,1]],"20/02/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",3,79],["FBFBBPAC03-LH-200CM",2,2],["Bebekim Step 3 rs บล็อคโคลี่+วิตามินซี 092",1,10],["สินค้า Clearance Sale",1,4],["แผ่นรองคลาน XPE แบบพับ 180x200cm ลายทะเลสา",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Hosttail เทปสำหรับติดพรมปูพื้นสำหรับสัตว์เ",1,2],["[White Buzz] Hosttail แผ่นรองกันลื่นสัตว์เ",1,2],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["[อะไหล่] ผ้ากั้นเตียง ปรับความสูงได้ 28 le",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["Bebeplay มุมฉากที่กั้นเตียง 90 องศา สีขาว",1,2],["Birthday party set  เซ็ตวันเกิดสำหรับสัตว์",1,1],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1]],"15/12/2025":[["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["Playtime เก้าอี้ทานข้าวเด็ก รุ่น Buddy สีเ",1,1]],"24/04/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",2,39],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["FSBBBPTD02-TS-WBW",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 30 cm รุ่น ",1,1]],"22/06/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["FBFBBPAC03-LH-200CM",1,1],["FSBBBPTD02-TS-WBW",1,1]],"20/01/2026":[],"25/03/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",3,79],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["แผ่นรองคลาน XPE แบบพับ 180x200cm ลายทะเลสา",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["Bebeplay มุมฉากที่กั้นเตียง 90 องศา สีขาว",1,2],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["Bebeplay คานยึดหัวเตียง รุ่น Little Home ข",1,1],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["FSBBBPTD02-TS-WBW",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 10 cm รุ่น ",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 30 cm รุ่น ",1,1]],"06/03/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",3,79],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["แผ่นรองคลาน XPE แบบพับ 180x200cm ลายทะเลสา",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["[อะไหล่] ผ้ากั้นเตียง ปรับความสูงได้ 28 le",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["Bebeplay มุมฉากที่กั้นเตียง 90 องศา สีขาว",1,2],["Birthday party set  เซ็ตวันเกิดสำหรับสัตว์",1,1],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["Bebeplay คานยึดหัวเตียง รุ่น Little Home ข",1,1],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["FSBBBPTD02-TS-WBW",1,1]],"16/06/2026":[["FBFBBPAC03-LH-200CM",2,2],["จุกยางสุญญากาศ ขนาด OD 35 mm",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["FSBBBPTD02-TS-WBW",1,1]],"28/04/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",2,39],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["FSBBBPTD02-TS-WBW",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 30 cm รุ่น ",1,1]],"02/02/2026":[["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["Playtime เก้าอี้ทานข้าวเด็ก รุ่น Buddy สีเ",1,1]],"10/03/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",3,79],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["แผ่นรองคลาน XPE แบบพับ 180x200cm ลายทะเลสา",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["[อะไหล่] ผ้ากั้นเตียง ปรับความสูงได้ 28 le",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["Bebeplay มุมฉากที่กั้นเตียง 90 องศา สีขาว",1,2],["Birthday party set  เซ็ตวันเกิดสำหรับสัตว์",1,1],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["Bebeplay คานยึดหัวเตียง รุ่น Little Home ข",1,1],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["FSBBBPTD02-TS-WBW",1,1]],"11/04/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",3,79],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["Playtime ที่กั้นเตียง รุ่น LittleWall ขนาด",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["แถมฟรี สเปรย์ทำความสะอาด bebeplay Surface ",1,2],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["Bebeplay คานยึดหัวเตียง รุ่น Little Home ข",1,1],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["FSBBBPTD02-TS-WBW",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 30 cm รุ่น ",1,1]],"04/02/2026":[["Hosttail เทปสำหรับติดพรมปูพื้นสำหรับสัตว์เ",1,2],["[White Buzz] Hosttail แผ่นรองกันลื่นสัตว์เ",1,2],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["Birthday party set  เซ็ตวันเกิดสำหรับสัตว์",1,1],["Bebeplay ม้าโยกขาไถ รุ่น Lamby สีขาว-เขียว",1,1],["Bebeplay ที่กั้นบันไดแบบขยายได้ ขนาด 86-12",1,1],["Playtime เก้าอี้ทานข้าวเด็ก รุ่น Buddy สีเ",1,1]],"23/12/2025":[["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["Playtime เก้าอี้ทานข้าวเด็ก รุ่น Buddy สีเ",1,1]],"25/05/2026":[["จุกยางสุญญากาศ ขนาด OD 35 mm",2,39],["FBFBBPAC03-LH-200CM",2,2],["สินค้า Clearance Sale",1,4],["Bebekim Step 1 rs ฟักทอง 0842",1,4],["กระเป๋าเก้าอี้ Flipp สีเทา",1,2],["ผ้าห่มกันสะดุ้ง 70x110cm ลายเสือดาว สีเทา",1,1],["FSBBBPTD02-TS-WBW",1,1],["Bebeplay แผ่นเสริมที่กั้นบันได 30 cm รุ่น ",1,1]]};
+    const rpSort=document.getElementById('rpSort');
+    const drawRP=()=>{let a=CDPRP.slice();if(rpSort.value==='conv')a.sort((x,y)=>y.convRecip-x.convRecip);else a.sort((x,y)=>{const p=s=>s.dd.split('/').reverse().join('');return p(x)<p(y)?-1:1;});
+      let h='<table class="btable"><thead><tr><th>วันยิง</th><th>สินค้า</th><th class="num">ผู้รับ</th><th class="num">เปิด</th><th class="num">กลับมาซื้อ</th><th class="num">%ผู้รับ</th><th class="num">%ผู้เปิด</th></tr></thead><tbody>';
+      a.forEach(e=>{const hot=e.convRecip>=5;h+=`<tr><td class="pname">${e.dd}</td><td>${e.prod}</td><td class="num">${e.recip.toLocaleString()}</td><td class="num">${e.opened}</td><td class="num"><b class="rpbuy" data-dd="${e.dd}" data-prod="${e.prod}" style="cursor:pointer;color:#2EB888;text-decoration:underline dotted;text-underline-offset:2px">${e.buy}</b></td><td class="num"><span style="color:${hot?'#2EB888':'var(--t-body)'};font-weight:700">${e.convRecip}%</span></td><td class="num">${e.convOpen}%</td></tr>`;});
+      h+='</tbody></table>';document.getElementById('rpTable').innerHTML=h;};
+    rpSort.onchange=drawRP; drawRP();
+    document.getElementById('rpTable').addEventListener('click',ev=>{const b=ev.target.closest('.rpbuy');if(!b)return;const dd=b.dataset.dd,prod=b.dataset.prod,arr=RPDETAIL[dd]||[];document.getElementById('rpDetailHead').innerHTML=`<b style="color:var(--lav-600)">${prod}</b> · ยิง ${dd} — กลับมาซื้อ ${b.textContent} ราย`;const el=document.getElementById('rpDetail');el.innerHTML=arr.length?('<div class="barlist">'+(()=>{const mx=Math.max(...arr.map(x=>x[1]));return arr.map(([nm,bu,un])=>`<div class="r"><div class="nm" title="${nm}">${nm}</div><div class="track"><div class="fill" style="width:${bu/mx*100}%;background:#2EB888"></div></div><div class="vn">${bu} <span style="color:var(--t-muted);font-weight:500;font-size:11px">(${un})</span></div></div>`).join('');})()+'</div>'):'<div style="color:var(--t-muted);font-size:13px;padding:14px 4px">ไม่พบรายการซื้อที่จับคู่ได้</div>';});
+  }
+  // ---- member interest filter ----
+  const mis=document.getElementById('memIntSel');
+  if(mis){mis.add(new Option('ทั้งหมด','__all'));aggDict(MEMM,'int').filter(e=>e[0]!=='(ไม่ระบุ)'&&e[0]!=='อื่นๆ').slice(0,14).forEach(e=>mis.add(new Option(e[0]+' ('+e[1].toLocaleString()+')',e[0])));mis.onchange=render;}
+  // ---- Broadcast Hosttail ----
+  const bchSel=document.getElementById('bchSel');
+  if(bchSel){bchSel.add(new Option('ทั้งหมด ('+BCH.length+' ครั้ง)','__all'));BCH.forEach((b,i)=>bchSel.add(new Option(b.date+' · '+b.prod,String(i))));bchSel.onchange=renderBCH;renderBCH();}
+  // ยิงเดือนละกี่ครั้ง (Hosttail)
+  const MNh=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const hm={},hord=[];
+  BCH.forEach(b=>{const[d,mo,y]=b.date.split('/');const key=y+'-'+mo;if(!(key in hm)){hm[key]=0;hord.push(key);}hm[key]++;});
+  let hml=hord.map(key=>{const[y,mo]=key.split('-');return `<div class="row"><span>${MNh[+mo-1]} ${y.slice(2)}</span><b>${hm[key]} ครั้ง</b></div>`;}).join('');
+  hml+=`<div class="row" style="border-top:2px solid #e5e8ef;border-bottom:none;margin-top:4px;padding-top:9px"><span style="font-weight:700">รวม</span><b style="color:var(--lav-600)">${BCH.length} ครั้ง</b></div>`;
+  const hme=document.getElementById('bchMonthList'); if(hme)hme.innerHTML=hml;
+  // ---- Plan คนท้อง (hospital breakdown) ----
+  const PREG=[["โรงพยาบาลอื่น ๆ",277],["โรงพยาบาลพญาไท",37],["โรงพยาบาลสมิติเวช",14],["โรงพยาบาลเปาโล",6]];
+  const PREGC=['#CBD5E1','#7E68F0','#2EB888','#FFB17A'];
+  const pgEl=document.getElementById('pregChart');
+  if(pgEl){mk('pregChart',{type:'doughnut',data:{labels:PREG.map(e=>e[0]),datasets:[{data:PREG.map(e=>e[1]),backgroundColor:PREGC,borderWidth:2,borderColor:'#fff'}]},options:{cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.raw+' คน ('+Math.round(c.raw/334*100)+'%)'}}}}});
+   barlist(document.getElementById('pregList'),PREG,v=>v+' คน');
+   // เริ่มเป็นสมาชิก รายเดือน + รายวัน
+   const PMON=[["มี.ค.26",18],["เม.ย.26",62],["พ.ค.26",83],["มิ.ย.26",99],["ก.ค.26",72]];
+   mk('pregMonthChart',{type:'bar',plugins:[pctLbl(PMON.map(e=>e[1]))],data:{labels:PMON.map(e=>e[0]),datasets:[{label:'คนที่กรอก',data:PMON.map(e=>e[1]),backgroundColor:'#7E68F0',borderRadius:6}]},options:{layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+' คน'}}},scales:{y:{grid:{color:'#eef0f4'}},x:{grid:{display:false}}}}});
+   const PDAY=[["17/03/2026",1],["19/03/2026",1],["21/03/2026",1],["22/03/2026",2],["24/03/2026",1],["25/03/2026",2],["26/03/2026",1],["27/03/2026",6],["29/03/2026",2],["30/03/2026",1],["01/04/2026",1],["02/04/2026",1],["03/04/2026",2],["04/04/2026",1],["05/04/2026",5],["06/04/2026",1],["08/04/2026",6],["09/04/2026",2],["10/04/2026",2],["11/04/2026",1],["12/04/2026",2],["13/04/2026",1],["15/04/2026",1],["16/04/2026",1],["17/04/2026",1],["18/04/2026",3],["19/04/2026",1],["20/04/2026",6],["21/04/2026",1],["22/04/2026",2],["23/04/2026",1],["24/04/2026",4],["25/04/2026",2],["26/04/2026",4],["27/04/2026",4],["28/04/2026",2],["29/04/2026",2],["30/04/2026",2],["01/05/2026",1],["02/05/2026",1],["04/05/2026",1],["05/05/2026",1],["06/05/2026",2],["07/05/2026",3],["08/05/2026",3],["09/05/2026",4],["10/05/2026",6],["11/05/2026",4],["12/05/2026",4],["13/05/2026",3],["14/05/2026",4],["15/05/2026",2],["16/05/2026",6],["18/05/2026",2],["19/05/2026",4],["20/05/2026",4],["21/05/2026",4],["22/05/2026",5],["23/05/2026",2],["24/05/2026",1],["26/05/2026",1],["27/05/2026",7],["28/05/2026",3],["29/05/2026",1],["30/05/2026",4]];
+   let pdl='';let curm='';
+   PDAY.forEach(([d,n])=>{const mo=d.slice(3,5);if(mo!==curm){curm=mo;const mn={'03':'มีนาคม','04':'เมษายน','05':'พฤษภาคม'}[mo];pdl+=`<div style="font-weight:700;color:var(--lav-600);font-size:12.5px;margin:8px 0 3px;border-bottom:1px solid #eef0f4;padding-bottom:3px">${mn} 2026</div>`;}pdl+=`<div class="row" style="padding:3px 0"><span>${d}</span><b>${n} คน</b></div>`;});
+   document.getElementById('pregDayList').innerHTML=pdl;}
+  // ---- Direct Sale: สินค้าขายดีผ่าน LINE OA (จำนวนชิ้น) ----
+  const DSPROD=[["Roll Mat 16 mm. แผ่นปูพื้น",400,23],["Roll Mat 4 mm. แผ่นปูพื้น",105,4],["จุกยางสุญญากาศ OD 35mm",86,3],["Bebeplay Surface & Cleaner Spray",78,25],["ที่กั้นเตียง Super Safety",47,19],["Hosttail แผ่นรองกันลื่นสัตว์เลี้ยง",28,10],["สินค้า Clearance Sale",28,9],["แผ่นคอกสุนัข เพ็ทโฮม ขาว",18,7],["Hosttail เทปติดพรมปูพื้น",16,11],["Bebeplay คอกกั้นเด็ก HugBear L",15,15],["Hosttail แผ่นรองกันลื่น [Beige]",13,6],["Hosttail แผ่นรองกันลื่น [Organic Beige]",12,8]];
+  const dpe=document.getElementById('dsProdList');
+  if(dpe){const mx=Math.max(...DSPROD.map(e=>e[1]));dpe.innerHTML=DSPROD.map(([n,q,o],i)=>{const c=n.includes('Hosttail')||n.includes('สุนัข')||n.includes('สัตว์')||n.includes('พรม')?'#F6841F':'#5AACCF';return `<div class="r"><div class="nm" title="${n}">${n}</div><div class="track"><div class="fill" style="width:${q/mx*100}%;background:${c}"></div></div><div class="vn">${q} <span style="color:var(--t-muted);font-weight:500;font-size:11px">(${o})</span></div></div>`;}).join('');}
+  // สินค้าทั้งหมดผ่าน LOA_Hosttail
+  const DSPROD_HT=[["Roll Mat 16mm แผ่นปูพื้น",366979,246],["Roll Mat 4mm แผ่นปูพื้น",141750,105],["Hosttail แผ่นรองกันลื่นสัตว์เลี้ยง",140418,58],["คอกสุนัข (รวมรุ่น)",26785,10],["แผ่น EVA รองนอนสุนัข 6mm",23436,31],["คอกสุนัข Pethome",22455,5],["Hosttail ห้องน้ำแมวอัจฉริยะ",11800,2],["HouseAir-Paws บ้านแอร์สัตว์",11600,2],["คอกสุนัข Super Safe",9693,3],["คอกสุนัข เพ็ทโฮม S",8240,4],["คอกสุนัข เพ็ทโฮม XL",8156,2],["คอกกั้นสัตว์เลี้ยง+ล้อ+หลังคา",7951,2]];
+  const dphe=document.getElementById('dsProdListHT');
+  if(dphe){const mx2=Math.max(...DSPROD_HT.map(e=>e[1]));dphe.innerHTML=DSPROD_HT.map(([n,rev,q])=>{const c=n.includes('Roll Mat')||n.includes('พรมปูพื้น')?'#FBB36B':'#F6841F';return `<div class="r"><div class="nm" title="${n}">${n}</div><div class="track"><div class="fill" style="width:${rev/mx2*100}%;background:${c}"></div></div><div class="vn">${baht(rev)} <span style="color:var(--t-muted);font-weight:500;font-size:11px">(${q})</span></div></div>`;}).join('');}
+  // LOA_Hosttail รายเดือน → ย้ายไปฟังก์ชัน render() แล้ว (ผูกฟิลเตอร์เดือน)
+  // ---- บริการติดตั้ง (Planner) ----
+  if(document.getElementById('instCatChart')){
+    const CATC={'Hosttail':'#F6841F','Bebeplay':'#5AACCF','ปูพื้นอื่น':'#9B8AF0','Install':'#94A3B8'};
+    const cs=INST.catsum;
+    const clabs=Object.keys(cs);
+    mk('instCatChart',{type:'doughnut',data:{labels:clabs.map(c=>c==='Install'?'Install Service':'ปูพื้น '+c),datasets:[{data:clabs.map(c=>cs[c].n),backgroundColor:clabs.map(c=>CATC[c]||'#ccc'),borderWidth:2,borderColor:'#fff'}]},options:{cutout:'56%',plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.label+': '+c.raw+' งาน'}}}}});
+    const be=Object.entries(INST.bucket),bmx=Math.max(...be.map(e=>e[1]));
+    document.getElementById('instBucketList').innerHTML=be.map(([n,v],i)=>{const c=PALETTE[i%PALETTE.length];return `<div class="r"><div class="nm" title="${n}">${n}</div><div class="track"><div class="fill" style="width:${v/bmx*100}%;background:${c}"></div></div><div class="vn">${v} งาน</div></div>`;}).join('');
+    const isel=document.getElementById('instSel');
+    [['__all','ทั้งหมด ('+INST.tasks.length+')'],['Hosttail','ปูพื้น Hosttail'],['Bebeplay','ปูพื้น Bebeplay'],['Install','Install Service'],['__own','ลูกค้าประกอบเอง']].forEach(([v,t])=>isel.add(new Option(t,v)));
+    isel.onchange=renderInst; renderInst();
+  }
+  // Install Service (ปิดงานแล้ว) — ยอดรายเดือน (ตามวันปิดงาน · ยอดจากเลขบิล)
+  if(document.getElementById('instSvcChart')){
+    const INSTMON=[["2026-02",89700,5],["2026-03",51640,6],["2026-04",9980,5]];
+    const itot=INSTMON.reduce((s,e)=>s+e[1],0), ijobs=INSTMON.reduce((s,e)=>s+e[2],0);
+    mk('instSvcChart',{type:'bar',plugins:[pctLbl(INSTMON.map(e=>e[1]))],data:{labels:INSTMON.map(e=>fmt(e[0])),datasets:[{label:'ยอด Install ปิดงาน',data:INSTMON.map(e=>e[1]),backgroundColor:'#94A3B8',borderRadius:6}]},options:{layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>baht(c.raw)+' ('+INSTMON[c.dataIndex][2]+' งาน)'}}},scales:{y:{grid:{color:'#eef0f4'}},x:{grid:{display:false}}}}});
+    let ih='';INSTMON.forEach(([m,a,n])=>{ih+=`<div class="row"><span>${fmt(m)} <span style="color:var(--t-muted);font-weight:500;font-size:11px">(${n} งาน)</span></span><b>${baht(a)}</b></div>`;});
+    ih+=`<div class="row" style="border-top:2px solid #e5e8ef;border-bottom:none;margin-top:4px;padding-top:9px"><span style="font-weight:700">รวม (${ijobs} งาน)</span><b style="color:var(--lav-600)">${baht(itot)}</b></div>`;
+    ih+=`<div class="gnote" style="margin-top:8px;color:var(--t-muted);font-size:11px">*ยอดสุทธิจากไฟล์ Service บริการติดตั้ง 2 (กระทบ JST ครบทุกช่องทาง) · ม.ค. มี 1 งานแต่ไม่มียอด</div>`;
+    document.getElementById('instSvcMonthList').innerHTML=ih;
+  }
+}
+function renderInst(){
+  const v=document.getElementById('instSel').value;
+  let ts=INST.tasks.slice();
+  if(v==='__own') ts=ts.filter(t=>t.bucket==='ลูกค้าประกอบเอง');
+  else if(v!=='__all') ts=ts.filter(t=>t.cat===v);
+  const catTH={'Hosttail':'<span style="color:#E8730C;font-weight:700">ปูพื้น Hosttail</span>','Bebeplay':'<span style="color:#3A90BB;font-weight:700">ปูพื้น Bebeplay</span>','ปูพื้นอื่น':'ปูพื้นอื่น','Install':'<span style="color:#64748B">Install</span>'};
+  let h='<table class="btable"><thead><tr><th>เลขบิล</th><th>สินค้า</th><th>ประเภท</th><th>ขั้นตอน (Bucket)</th><th>สถานะ</th><th class="num">ยอด</th></tr></thead><tbody>';
+  ts.forEach(t=>{h+=`<tr><td class="pname">${t.bill||'-'}</td><td>${t.name||'-'}</td><td>${catTH[t.cat]||t.cat}</td><td>${t.bucket}</td><td><span class="chip ${t.status==='เสร็จ'?'c':'o'}">${t.status}</span></td><td class="num">${t.amt?baht(t.amt):'-'}</td></tr>`;});
+  h+='</tbody></table>';
+  document.getElementById('instTable').innerHTML=h;
+}
+function renderBC(){
+  const S=selMonths();
+  const inR=BC.filter(b=>{const p=b.dd.split('/');return S.includes(p[2]+'-'+p[1]);});
+  const bcSel=document.getElementById('bcSel');
+  const cur=bcSel.value||'__all';
+  bcSel.innerHTML='';
+  bcSel.add(new Option('ทั้งหมด ('+inR.length+' ครั้ง)','__all'));
+  inR.forEach(b=>bcSel.add(new Option(b.prod+' · '+b.dd,b.dd)));
+  bcSel.value=[...bcSel.options].some(o=>o.value===cur)?cur:'__all';
+  const v=bcSel.value;
+  const view=(v==='__all')?inR:inR.filter(b=>b.dd===v);
+  const tr=view.reduce((s,b)=>s+b.recipients,0),to=view.reduce((s,b)=>s+b.opened,0),tc=view.reduce((s,b)=>s+b.clicked,0);
+  document.getElementById('bc-recip').textContent=tr.toLocaleString();
+  document.getElementById('bc-open').textContent=(tr?(to/tr*100):0).toFixed(1)+'%';
+  document.getElementById('bc-open-sub').textContent=to.toLocaleString()+' เปิด';
+  document.getElementById('bc-click').textContent=(tr?(tc/tr*100):0).toFixed(1)+'%';
+  document.getElementById('bc-click-sub').textContent=tc.toLocaleString()+' คลิก';
+  document.getElementById('bc-n').textContent=(v==='__all'?inR.length:1);
+  document.getElementById('bc-range').textContent=inR.length?(v==='__all'?(inR[0].dd+' – '+inR[inR.length-1].dd):view[0].dd):'ไม่มีในช่วงที่เลือก';
+  mk('bcChart',{type:'bar',data:{labels:view.map(b=>b.prod),datasets:[
+    {label:'เปิดอ่าน',data:view.map(b=>b.opened),backgroundColor:'#7EC8E3',borderRadius:5},
+    {label:'คลิก',data:view.map(b=>b.clicked),backgroundColor:'#2EB888',borderRadius:5}
+  ]},options:{plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString()+' คน'}}},scales:{y:{grid:{color:'#eef0f4'}},x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:55,minRotation:0,font:{size:10}}}}}});
+  const MN2=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const bcm={};const bcord=[];
+  inR.forEach(b=>{const[d,mo,y]=b.dd.split('/');const key=y+'-'+mo;if(!(key in bcm)){bcm[key]=0;bcord.push(key);}bcm[key]++;});
+  let bml=bcord.map(key=>{const[y,mo]=key.split('-');return `<div class="row"><span>${MN2[+mo-1]} ${y.slice(2)}</span><b>${bcm[key]} ครั้ง</b></div>`;}).join('');
+  bml+=`<div class="row" style="border-top:2px solid #e5e8ef;border-bottom:none;margin-top:4px;padding-top:9px"><span style="font-weight:700">รวม</span><b style="color:var(--lav-600)">${inR.length} ครั้ง</b></div>`;
+  const bme=document.getElementById('bcMonthList'); if(bme)bme.innerHTML=inR.length?bml:'<div style="color:var(--t-muted);font-size:13px">ไม่มีการยิงในช่วงที่เลือก</div>';
+  let h='<table class="btable"><thead><tr><th>วันที่</th><th>สินค้าที่ยิง</th><th class="num">ผู้รับ</th><th class="num">เปิด</th><th class="num">% เปิด</th><th class="num">คลิก</th><th class="num">% คลิก</th></tr></thead><tbody>';
+  inR.forEach(b=>{const seld=(v!=='__all'&&b.dd===v)?' class="sel"':'';h+=`<tr${seld}><td>${b.dd}</td><td class="pname">${b.prod}</td><td class="num">${b.recipients.toLocaleString()}</td><td class="num"><span class="chip o">${b.opened.toLocaleString()}</span></td><td class="num">${b.openRate}%</td><td class="num"><span class="chip c">${b.clicked.toLocaleString()}</span></td><td class="num">${b.clickRate}%</td></tr>`;});
+  h+='</tbody></table>';
+  document.getElementById('bcTable').innerHTML=inR.length?h:'<div style="color:var(--t-muted);font-size:13px;padding:14px 4px">ไม่มีการยิงในช่วงที่เลือก</div>';
+}
+function renderBCH(){
+  const sel=document.getElementById('bchSel'), v=sel?sel.value:'__all';
+  const view=(v==='__all')?BCH:[BCH[+v]];
+  const ts=view.reduce((s,b)=>s+b.sent,0),to=view.reduce((s,b)=>s+b.opened,0),tc=view.reduce((s,b)=>s+b.clicked,0);
+  document.getElementById('bch-n').textContent=(v==='__all'?BCH.length:1);
+  document.getElementById('bch-open').textContent=(ts?(to/ts*100):0).toFixed(1)+'%';
+  document.getElementById('bch-open-sub').textContent=to.toLocaleString()+' เปิด';
+  document.getElementById('bch-click').textContent=(ts?(tc/ts*100):0).toFixed(1)+'%';
+  document.getElementById('bch-click-sub').textContent=tc.toLocaleString()+' คลิก';
+  mk('bchChart',{type:'bar',data:{labels:view.map(b=>b.prod),datasets:[
+    {label:'เปิด',data:view.map(b=>b.opened),backgroundColor:'#FBB36B',borderRadius:5},
+    {label:'คลิก',data:view.map(b=>b.clicked),backgroundColor:'#E8730C',borderRadius:5}
+  ]},options:{plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString()+' คน'}}},scales:{y:{grid:{color:'#eef0f4'}},x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:35,font:{size:10}}}}}});
+  let h='<table class="btable"><thead><tr><th>วันที่</th><th>เวลา</th><th>สินค้า/ข้อความ</th><th class="num">เพื่อนใน LOA</th><th class="num">ส่ง</th><th class="num">เปิด</th><th class="num">% เปิด</th><th class="num">คลิก</th><th class="num">% คลิก</th></tr></thead><tbody>';
+  BCH.forEach((b,i)=>{const seld=(v!=='__all'&&+v===i)?' class="sel"':'';const orr=b.sent?(b.opened/b.sent*100).toFixed(1):'0';const crr=b.sent?(b.clicked/b.sent*100).toFixed(1):'0';h+=`<tr${seld}><td>${b.date}</td><td>${b.time}</td><td class="pname">${b.prod}</td><td class="num">${BCH_FRIENDS.toLocaleString()}</td><td class="num">${b.sent.toLocaleString()}</td><td class="num"><span class="chip o">${b.opened.toLocaleString()}</span></td><td class="num">${orr}%</td><td class="num"><span class="chip c">${b.clicked.toLocaleString()}</span></td><td class="num">${crr}%</td></tr>`;});
+  h+='</tbody></table>';
+  document.getElementById('bchTable').innerHTML=h;
+}
+statics();render();
+</script>
+</body>
+</html>
