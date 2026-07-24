@@ -127,7 +127,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
   <aside class="side">
     <div class="sidehead">
       <h1>Direct Sale to Service</h1>
-      <span class="upd">🕒 อัปเดตล่าสุด ณ วันที่ 20/07/2026</span>
+      <span class="upd">🕒 อัปเดตล่าสุด ณ วันที่ 24/07/2026</span>
     </div>
     <div class="tabs" id="tabs"></div>
     <div class="filterbar" id="filterbar">
@@ -503,7 +503,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
   </section>
 
   <div class="note amber" id="memNote"><b>หมายเหตุ:</b> ต.ค. 2025 สมาชิกเพิ่มก้อนใหญ่ 1,367 คน เนื่องจาก<b>เปลี่ยนเวอร์ชันระบบ Choco จาก L3 เป็น L4</b> (ย้าย/รวมฐานสมาชิกเข้าระบบใหม่) จึงไม่ใช่การเติบโตจากแคมเปญปกติ — ทำให้ % เติบโตเดือนนั้นสูงผิดปกติ · ปี 2026 บางเดือนยังไม่มีข้อมูล "สินค้าที่สนใจ"/จังหวัด</div>
-  <div class="note"><b>ที่มาข้อมูล:</b> Direct Sale = Bebeplay LOA (Pivot) + Hosttail ปูพื้น (LOA_hosttail) · บริการปูพื้น = LDS + มัดจำ Event (SER) ทุกช่องทาง · ข้อมูลจริง มี.ค.–มิ.ย. 2026 (มิ.ย. ยังไม่จบเดือน) · สมาชิก = ReportCustomer Choco 2024–2026</div>
+  <div class="note"><b>ที่มาข้อมูล:</b> Direct Sale = Bebeplay LOA (Pivot) + Hosttail ปูพื้น (LOA_hosttail) · บริการปูพื้น = LDS + มัดจำ Event (SER) ทุกช่องทาง · ข้อมูลจริง มี.ค.–ก.ค. 2026 (ก.ค. ยังไม่จบเดือน) · สมาชิก = ReportCustomer Choco 2024–2026</div>
 
   <footer>สร้างจากไฟล์บริการติดตั้งปูพื้น + Direct Sale.xlsx + ReportCustomer Choco · MPD Group</footer>
   </main>
@@ -520,18 +520,18 @@ const PARTIAL={"2026-07":true};
 
 // ===== Direct Sale =====
 const DS_BEBE={"2026-01":54676,"2026-02":48481,"2026-03":135688,"2026-04":193393,"2026-05":163039,"2026-06":209671,"2026-07":88252};
-const DS_HOST={"2026-03":109600,"2026-04":47400,"2026-05":348670,"2026-06":114315,"2026-07":361150};
+const DS_HOST={"2026-03":109600,"2026-04":47400,"2026-05":348670,"2026-06":114315,"2026-07":414700};
 const DS_HOST_PEND={};
 const dsBebe=m=>DS_BEBE[m]||0, dsHost=m=>DS_HOST[m]||0, dsTot=m=>dsBebe(m)+dsHost(m);
 
 // ===== Floor service ===== (Mar from SharePoint cloud read)
 const SVC={real:["2026-03","2026-04","2026-05","2026-06","2026-07"],
- total:{"2026-03":193590,"2026-04":428012,"2026-05":515204,"2026-06":320765,"2026-07":481900},
+ total:{"2026-03":193590,"2026-04":428012,"2026-05":515204,"2026-06":320765,"2026-07":644750},
  chan:{"2026-03":{"FB_hosttail":59990,"LOA_hosttail":109600,"LOA_bebeplay":24000},
    "2026-04":{"FB_hosttail":264672,"LOA_hosttail":47400,"LOA_bebeplay":103700,"FB_bebeplay":10240,"Event Pet Expo":2000},
    "2026-05":{"FB_hosttail":96264,"LOA_hosttail":348670,"LOA_bebeplay":600,"FB_bebeplay":62670,"Event Pet Expo":7000},
    "2026-06":{"FB_hosttail":62400,"LOA_hosttail":114315,"LOA_bebeplay":121300,"FB_bebeplay":22750},
-   "2026-07":{"FB_hosttail":77550,"LOA_hosttail":361150,"LOA_bebeplay":43200}}};
+   "2026-07":{"FB_hosttail":186850,"LOA_hosttail":414700,"LOA_bebeplay":43200}}};
 const CHANS=["FB_hosttail","LOA_hosttail","FB_bebeplay","LOA_bebeplay","Event Pet Expo"];
 // Hosttail = orange shades · Bebeplay = blue shades · Event = violet (not orange)
 const CHANC={"FB_hosttail":"#E8730C","LOA_hosttail":"#FBB36B","FB_bebeplay":"#2E7DA8","LOA_bebeplay":"#7EC8E3","Event Pet Expo":"#9B8AF0"};
