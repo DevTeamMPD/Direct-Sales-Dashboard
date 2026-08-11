@@ -127,7 +127,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
   <aside class="side">
     <div class="sidehead">
       <h1>Direct Sale to Service</h1>
-      <span class="upd">🕒 อัปเดตล่าสุด ณ วันที่ 05/08/2026</span>
+      <span class="upd">🕒 อัปเดตล่าสุด ณ วันที่ 11/08/2026</span>
     </div>
     <div class="tabs" id="tabs"></div>
     <div class="filterbar" id="filterbar">
@@ -520,19 +520,19 @@ const PARTIAL={"2026-08":true};
 
 // ===== Direct Sale =====
 const DS_BEBE={"2026-01":54676,"2026-02":48481,"2026-03":135688,"2026-04":193393,"2026-05":163039,"2026-06":209671,"2026-07":88252};
-const DS_HOST={"2026-03":109600,"2026-04":47400,"2026-05":348670,"2026-06":114315,"2026-07":476030,"2026-08":31800};
+const DS_HOST={"2026-03":109600,"2026-04":47400,"2026-05":348670,"2026-06":114315,"2026-07":476030,"2026-08":137060};
 const DS_HOST_PEND={};
 const dsBebe=m=>DS_BEBE[m]||0, dsHost=m=>DS_HOST[m]||0, dsTot=m=>dsBebe(m)+dsHost(m);
 
 // ===== Floor service ===== (Mar from SharePoint cloud read)
 const SVC={real:["2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"],
- total:{"2026-03":193590,"2026-04":428012,"2026-05":515204,"2026-06":320765,"2026-07":771030,"2026-08":45800},
+ total:{"2026-03":193590,"2026-04":428012,"2026-05":515204,"2026-06":320765,"2026-07":771030,"2026-08":280600},
  chan:{"2026-03":{"FB_hosttail":59990,"LOA_hosttail":109600,"LOA_bebeplay":24000},
    "2026-04":{"FB_hosttail":264672,"LOA_hosttail":47400,"LOA_bebeplay":103700,"FB_bebeplay":10240,"Event Pet Expo":2000},
    "2026-05":{"FB_hosttail":96264,"LOA_hosttail":348670,"LOA_bebeplay":600,"FB_bebeplay":62670,"Event Pet Expo":7000},
    "2026-06":{"FB_hosttail":62400,"LOA_hosttail":114315,"LOA_bebeplay":121300,"FB_bebeplay":22750},
    "2026-07":{"FB_hosttail":247800,"LOA_hosttail":476030,"LOA_bebeplay":43200,"Event Pet Expo":4000},
-   "2026-08":{"LOA_hosttail":31800,"Event Pet Expo":9000,"Event BBB":5000}}};
+   "2026-08":{"LOA_hosttail":137060,"Event Pet Expo":9000,"Event BBB":5000,"FB_hosttail":102700,"FB_bebeplay":26840}}};
 const CHANS=["FB_hosttail","LOA_hosttail","FB_bebeplay","LOA_bebeplay","Event Pet Expo","Event BBB"];
 // Hosttail = orange shades · Bebeplay = blue shades · Event = violet (not orange)
 const CHANC={"FB_hosttail":"#E8730C","LOA_hosttail":"#FBB36B","FB_bebeplay":"#2E7DA8","LOA_bebeplay":"#7EC8E3","Event Pet Expo":"#9B8AF0","Event BBB":"#6249D6"};
