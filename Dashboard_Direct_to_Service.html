@@ -354,7 +354,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
     </div>
     <div class="card" style="margin-bottom:18px">
       <h3 id="pregDetailHead">รายชื่อสมาชิก</h3>
-      <div class="desc">ชื่อ · เบอร์ · กำหนดคลอด/เกิดลูก · วันที่กรอกฟอร์ม</div>
+      <div class="desc">ชื่อ · เบอร์ · วันที่กรอกฟอร์ม · กำหนดคลอด/วันเกิดลูก</div>
       <div id="pregDetailTable" style="max-height:420px;overflow:auto"></div>
     </div>
     <div class="grid three">
@@ -951,8 +951,8 @@ function statics(){
      const arr=PREGMEM[hosp]||[];
      document.querySelectorAll('.pregRow').forEach(r=>{r.style.background=r.dataset.hosp===hosp?'var(--lav-50)':'';});
      const hd=document.getElementById('pregDetailHead'); if(hd)hd.innerHTML='<b style="color:var(--lav-600)">'+hosp+'</b> — '+arr.length+' คน';
-     const rows=arr.map(m=>'<tr><td class="pname">'+m.n+'</td><td style="font-family:monospace;white-space:nowrap">'+m.p+'</td><td style="white-space:nowrap">'+(m.d?pregThDate(m.d):'—')+'</td><td style="white-space:nowrap">'+(m.s||'—')+'</td></tr>').join('');
-     const dt=document.getElementById('pregDetailTable'); if(dt)dt.innerHTML=arr.length?('<table class="btable"><thead><tr><th>ชื่อ</th><th>เบอร์</th><th>กำหนดคลอด/เกิดลูก</th><th>วันที่กรอกฟอร์ม</th></tr></thead><tbody>'+rows+'</tbody></table>'):'<div style="color:var(--t-muted);font-size:13px;padding:14px 4px">ไม่มีข้อมูล</div>';
+     const rows=arr.map(m=>'<tr><td class="pname">'+m.n+'</td><td style="font-family:monospace;white-space:nowrap">'+m.p+'</td><td style="white-space:nowrap">'+(m.s||'—')+'</td><td style="white-space:nowrap">'+(m.d?pregThDate(m.d):'—')+'</td></tr>').join('');
+     const dt=document.getElementById('pregDetailTable'); if(dt)dt.innerHTML=arr.length?('<table class="btable"><thead><tr><th>ชื่อ</th><th>เบอร์</th><th>วันที่กรอกฟอร์ม</th><th>กำหนดคลอด/วันเกิดลูก</th></tr></thead><tbody>'+rows+'</tbody></table>'):'<div style="color:var(--t-muted);font-size:13px;padding:14px 4px">ไม่มีข้อมูล</div>';
    };
    const plEl=document.getElementById('pregList');
    if(plEl){plEl.addEventListener('click',ev=>{const row=ev.target.closest('.pregRow');if(!row)return;showPregDetail(row.dataset.hosp);});showPregDetail(PREG[0][0]);}
