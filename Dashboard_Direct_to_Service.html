@@ -301,7 +301,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
           <select id="svCustChan" style="font-family:inherit;font-size:12.5px;font-weight:600;color:#3A90BB;border:1.5px solid var(--blue-200);border-radius:8px;padding:6px 10px;background:#fff;cursor:pointer"></select>
           <div style="position:relative">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="svCustSearch" type="text" placeholder="ค้นหา ชื่อ / เบอร์" style="font-family:inherit;font-size:12.5px;padding:6px 10px 6px 28px;border-radius:8px;border:1.5px solid #e5e8ef;width:180px">
+            <input id="svCustSearch" type="text" placeholder="ค้นหา ชื่อ / เบอร์ / เลขบิล" style="font-family:inherit;font-size:12.5px;padding:6px 10px 6px 28px;border-radius:8px;border:1.5px solid #e5e8ef;width:200px">
           </div>
         </div>
       </div>
@@ -827,7 +827,7 @@ function render(){
   // channel order grouped by brand: Bebeplay (LINE OA อ่อน → FB เข้ม), Hosttail (LINE OA อ่อน → FB เข้ม), Event
   const BORD=["LOA_bebeplay","FB_bebeplay","LOA_hosttail","FB_hosttail","Event Pet Expo","Event BBB"];
   const CHLAB={"FB_hosttail":"FB Hosttail","LOA_hosttail":"LINE OA Hosttail","FB_bebeplay":"FB Bebeplay","LOA_bebeplay":"LINE OA Bebeplay","Event Pet Expo":"Event Pet Expo","Event BBB":"Event BBB"};
-  mk('brandMonthChart',{type:'bar',plugins:[tgtLine,totLbl],data:{labels:SVL,datasets:BORD.map(ch=>({label:CHLAB[ch],data:SM.map(m=>(SVC.chan[m]||{})[ch]||0),backgroundColor:CHANC[ch],borderRadius:3,stack:'s'}))},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw),footer:items=>'รวม: '+baht(items.reduce((s,it)=>s+it.raw,0))}}},scales:{y:{...ggrid(),stacked:true,suggestedMax:500000},x:{stacked:true,grid:{display:false}}}}});
+  mk('brandMonthChart',{type:'bar',plugins:[tgtLine,totLbl],data:{labels:SVL,datasets:BORD.map(ch=>({label:CHLAB[ch],data:SM.map(m=>(SVC.chan[m]||{})[ch]||0),backgroundColor:CHANC[ch],borderRadius:3,stack:'s'}))},options:{layout:{padding:{top:36}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw),footer:items=>'รวม: '+baht(items.reduce((s,it)=>s+it.raw,0))}}},scales:{y:{...ggrid(),stacked:true,suggestedMax:Math.max(500000,...monthTot)*1.05},x:{stacked:true,grid:{display:false}}}}});
   const totAll=monthTot.reduce((a,b)=>a+b,0),hAll=bH.reduce((a,b)=>a+b,0),bAll=bB.reduce((a,b)=>a+b,0),eAll=bE.reduce((a,b)=>a+b,0);
   document.getElementById('sv-tot').textContent=baht(totAll);
   document.getElementById('sv-host').textContent=baht(hAll);
@@ -859,13 +859,13 @@ function render(){
     let list=svOrdersSel.filter(o=>
       (monthSel==='__all'||o.ym===monthSel)&&
       (chanSel==='__all'||o.chan===chanSel)&&
-      (!term||String(o.name).toLowerCase().includes(term)||String(o.phone).includes(term))
+      (!term||String(o.name).toLowerCase().includes(term)||String(o.phone).includes(term)||String(o.bill).toLowerCase().includes(term))
     );
     list=list.slice().sort((a,b)=>a.orderDate<b.orderDate?1:-1);
     const listReal=list.filter(o=>!isEventWalkin(o)).length, listEvent=list.length-listReal;
     document.getElementById('svCustCount').textContent=list.length+' รายการ (SKU LDS/SER) · '+listReal+' ลูกค้าที่เปิดบิล · '+listEvent+' One-time Event';
     const th=t=>'<th style="position:sticky;top:0;background:#fff;z-index:1">'+t+'</th>';
-    let h='<table class="btable" style="min-width:760px"><thead><tr>'+th('ชื่อ')+th('เบอร์')+th('ช่องทาง')+th('สินค้า/SKU')+'<th class="num" style="position:sticky;top:0;background:#fff;z-index:1">ยอดชำระแล้ว</th>'+th('วันที่')+'</tr></thead><tbody>';
+    let h='<table class="btable" style="min-width:840px"><thead><tr>'+th('ชื่อ')+th('เบอร์')+th('ช่องทาง')+th('สินค้า/SKU')+'<th class="num" style="position:sticky;top:0;background:#fff;z-index:1">ยอดชำระแล้ว</th>'+th('วันที่')+th('เลขบิล')+'</tr></thead><tbody>';
     list.forEach(o=>{
       const isAnon=isEventWalkin(o);
       const cc=CHANC[o.chan]||'#94A3B8';
@@ -877,6 +877,7 @@ function render(){
         +'<td style="max-width:300px">'+skuChips+'</td>'
         +'<td class="num">'+baht(o.paid)+'</td>'
         +'<td style="white-space:nowrap;font-family:monospace">'+svDate(o.orderDate)+'</td>'
+        +'<td style="white-space:nowrap;font-family:monospace;color:var(--t-muted)">'+(o.bill||'—')+'</td>'
         +'</tr>';
     });
     h+='</tbody></table>';
