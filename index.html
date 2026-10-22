@@ -295,6 +295,11 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
     </div>
 
     <div class="card" style="margin-top:18px">
+      <h3>สรุป LOA_Bebeplay รายเดือน</h3>
+      <div class="desc">ช่องทาง × เดือน · ปูพื้น (LDS/SER) เทียบสินค้าอื่น · เลื่อนซ้าย-ขวาดูแต่ละเดือน</div>
+      <div class="gnote" id="dsBBMonthList" style="overflow:auto"></div>
+    </div>
+    <div class="card" style="margin-top:18px">
       <h3>สรุป LOA_Hosttail รายเดือน</h3>
       <div class="desc">ช่องทาง × เดือน · เลื่อนซ้าย-ขวาดูแต่ละเดือน</div>
       <div class="gnote" id="dsHTMonthList" style="overflow:auto"></div>
@@ -968,6 +973,19 @@ function render(){
     hRows+=`<tr>${hLab('#5AACCF','สินค้าอื่น','#fff')}${HM.map(([m,f,o])=>hCell(o)).join('')}</tr>`;
     hRows+=`<tr>${hLab('','รวมเดือน','#fff7f0',1)}${HM.map(([m,f,o])=>`<td style="padding:7px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-top:2px solid #e5e8ef;background:#fff7f0"><b style="color:#E8730C">${baht(f+o)}</b></td>`).join('')}</tr>`;
     hte.innerHTML=HM.length?`<table style="border-collapse:collapse;min-width:100%"><thead><tr>${hHead}</tr></thead><tbody>${hRows}</tbody></table>`:'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูลในช่วงที่เลือก</div>';
+  }
+  const bbe=document.getElementById('dsBBMonthList');
+  if(bbe){
+    const BBMON=M26.map(m=>{let f=0,o=0;DS_ORD.forEach(x=>{if(x.b==='B'&&x.d.slice(0,7)===m){if(x.it.some(i=>/^(LDS|SER)/i.test(i[0])))f+=x.p;else o+=x.p;}});return [m,Math.round(f),Math.round(o)];});
+    const BM=BBMON.filter(([m])=>S.includes(m));
+    const bHd=t=>`<th style="padding:7px 12px;font-size:12px;color:#3A90BB;border-bottom:2px solid #eef0f4;text-align:right;white-space:nowrap">${t}</th>`;
+    const bCell=v=>`<td style="padding:6px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f2f3f7"><b>${baht(v)}</b></td>`;
+    const bLab=(dot,txt,bg,bd)=>`<td style="position:sticky;left:0;background:${bg};padding:6px 12px;font-size:12.5px;font-weight:${bd?700:400};white-space:nowrap;${bd?'border-top:2px solid #e5e8ef;':'border-bottom:1px solid #f2f3f7'}z-index:1">${dot?`<i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dot};margin-right:6px"></i>`:''}${txt}</td>`;
+    let bHead=`<th style="position:sticky;left:0;background:#F0FBFF;text-align:left;padding:7px 12px;font-size:12px;color:#3A90BB;border-bottom:2px solid #eef0f4;z-index:2">ช่องทาง</th>`+BM.map(([m])=>bHd(fmt(m))).join('');
+    let bRows=`<tr>${bLab('#3A90BB','ปูพื้น (LDS)','#fff')}${BM.map(([m,f,o])=>bCell(f)).join('')}</tr>`;
+    bRows+=`<tr>${bLab('#9B8AF0','สินค้าอื่น','#fff')}${BM.map(([m,f,o])=>bCell(o)).join('')}</tr>`;
+    bRows+=`<tr>${bLab('','รวมเดือน','#F0FBFF',1)}${BM.map(([m,f,o])=>`<td style="padding:7px 12px;font-size:12.5px;text-align:right;white-space:nowrap;border-top:2px solid #e5e8ef;background:#F0FBFF"><b style="color:#3A90BB">${baht(f+o)}</b></td>`).join('')}</tr>`;
+    bbe.innerHTML=BM.length?`<table style="border-collapse:collapse;min-width:100%"><thead><tr>${bHead}</tr></thead><tbody>${bRows}</tbody></table>`:'<div style="color:var(--t-muted);font-size:13px">ไม่มีข้อมูลในช่วงที่เลือก</div>';
   }
 }
 
