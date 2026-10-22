@@ -115,7 +115,8 @@ section.page.on{display:block}
 .barlist .fill{height:100%;border-radius:7px}
 .barlist .vn{text-align:right;font-weight:700;color:var(--t-body)}
 #dsProdListHT .r{grid-template-columns:128px 1fr 108px}#dsProdListHT .vn{font-size:12px}
-.dsx .barlist{gap:11px}.dsx .barlist .r{display:block;cursor:pointer;border-radius:8px;padding:4px 6px;margin:-4px -6px;transition:background .12s}.dsx .dsxTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px;font-size:12.5px}.dsx .dsxTop .nm{white-space:normal;overflow:visible;line-height:1.35}.dsx .dsxTop .vn{white-space:nowrap}.dsx .barlist .track{height:11px}.dsx .barlist .r:hover,.dsx .barlist .r.on{background:var(--lav-50)}.dsx .barlist{max-height:520px;overflow:auto;padding-right:6px}
+.dsx .barlist{gap:11px}.dsx .barlist .r{display:block;cursor:pointer;border-radius:8px;padding:4px 6px;margin:-4px -6px;transition:background .12s}.dsx .dsxTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px;font-size:12.5px}.dsx .dsxTop .nm{white-space:normal;overflow:visible;line-height:1.35}.dsx .dsxTop .vn{white-space:nowrap}.dsx .barlist .track{height:11px}
+.dsxm{position:fixed;inset:0;background:rgba(30,27,60,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;backdrop-filter:blur(2px)}.dsxm.on{display:flex}.dsxm-box{background:#fff;border-radius:18px;width:min(780px,100%);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(30,27,60,.35);overflow:hidden}.dsxm-head{padding:18px 20px 16px}.dsxm-x{border:none;background:rgba(255,255,255,.75);width:32px;height:32px;border-radius:50%;font-size:15px;color:var(--t-muted);cursor:pointer;flex-shrink:0}.dsxm-x:hover{background:#fff;color:var(--t-head)}.dsxm-chip{background:#fff;border-radius:10px;padding:7px 13px;display:flex;flex-direction:column;gap:1px;box-shadow:0 1px 3px rgba(0,0,0,.06)}.dsxm-chip span{font-size:11px;color:var(--t-muted);font-weight:600}.dsxm-chip b{font-size:14.5px}.dsxm-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 20px;border-bottom:1px solid #eef0f4}.dsxm-tools input{font-family:inherit;font-size:12.5px;padding:7px 11px;border-radius:8px;border:1.5px solid #e5e8ef;width:230px;max-width:60%}#dsxmCount{font-size:12px;color:var(--t-muted);font-weight:600}.dsxm-body{overflow:auto;flex:1;padding:0 8px 12px}.dsxm-body .btable th{position:sticky;top:0;background:#fff;z-index:1}.dsx .barlist .r:hover{outline:1.5px solid var(--lav-200)}.dsx .barlist .r:hover,.dsx .barlist .r.on{background:var(--lav-50)}.dsx .barlist{max-height:520px;overflow:auto;padding-right:6px}
 .tac-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
 .tac{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid #eef0f4;padding:16px 18px}
 .tac h4{font-size:13px;font-weight:700;color:var(--lav-600);margin-bottom:9px}
@@ -269,7 +270,7 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
     </div>
     <div class="card" id="dsPx" style="margin-top:18px">
       <h3>🛍️ สินค้าที่ขายผ่าน LINE OA แยกแบรนด์</h3>
-      <div class="desc">ทุกออเดอร์ของ LOA_bebeplay และ LOA_hosttail · นับจากวันที่ชำระเงิน · แท่งยาว = จำนวนชิ้นที่ขาย (ตัวเลขท้ายแท่ง) · <b>คลิกแท่งสินค้า</b> เพื่อดูจำนวนออเดอร์และรายการบิล</div>
+      <div class="desc">ทุกออเดอร์ของ LOA_bebeplay และ LOA_hosttail · นับจากวันที่ชำระเงิน · แท่งยาว = จำนวนชิ้นที่ขาย (ตัวเลขท้ายแท่ง) · <b>คลิกแท่งสินค้า</b> เพื่อเปิดหน้าต่างรายการบิล (จำนวนออเดอร์ · เลขบิล · ลูกค้า)</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 14px;font-size:12.5px">
         <span style="color:var(--t-muted);font-weight:600">กรอง:</span>
         <select id="dsxY" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--lav-600);border:1.5px solid var(--lav-200);border-radius:8px;padding:6px 10px;background:#fff;cursor:pointer"></select>
@@ -284,13 +285,11 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
           <h3 style="color:#3A90BB">💙 Bebeplay · LOA_bebeplay</h3>
           <div class="desc" id="dsxSumB">—</div>
           <div class="barlist" id="dsxListB"></div>
-          <div id="dsxDetB" style="margin-top:14px"></div>
         </div>
         <div class="card dsx" style="background:#FFFAF5">
           <h3 style="color:#E8730C">🐾 Hosttail · LOA_hosttail</h3>
           <div class="desc" id="dsxSumH">—</div>
           <div class="barlist" id="dsxListH"></div>
-          <div id="dsxDetH" style="margin-top:14px"></div>
         </div>
       </div>
       <div class="note" style="margin-top:14px"><b>หมายเหตุ:</b> สีเข้ม = สินค้างานปูพื้น/บริการ (รหัส LDS · SER) — ส่วนนี้คือสิ่งที่นับเป็นยอด Direct Sale ฝั่ง Hosttail ด้านบน · สีอ่อน = สินค้าอื่นที่ขายผ่านช่องทางเดียวกัน · "ยอดออเดอร์" ในตารางคือยอดรวมทั้งบิล (1 บิลมีได้หลายสินค้า จึงแยกยอดเงินรายสินค้าไม่ได้) · ยอดรวมแบรนด์ Bebeplay ตรงกับการ์ดด้านบน</div>
@@ -1126,7 +1125,7 @@ function statics(){
     const periodLabel=()=>{let t=st.y==='__all'?'ทุกปี':'ปี '+st.y;if(st.m!=='__all')t=(st.d!=='__all'?(+st.d)+' ':'')+MNs[+st.m-1]+' '+(st.y==='__all'?'':st.y);return t.trim();};
 
     function draw(br){
-      const c=BR[br],sumEl=document.getElementById('dsxSum'+br),listEl=document.getElementById('dsxList'+br),detEl=document.getElementById('dsxDet'+br);
+      const c=BR[br],sumEl=document.getElementById('dsxSum'+br),listEl=document.getElementById('dsxList'+br);
       const ords=DS_ORD.filter(o=>o.b===br&&inScope(o));
       const prod={};let pcs=0,paid=0,floorPaid=0,floorOrd=0;
       ords.forEach(o=>{
@@ -1138,35 +1137,53 @@ function statics(){
       listEl._prod=prod;
       const arr=Object.values(prod).sort((a,b)=>b.q-a.q||b.o.length-a.o.length);
       sumEl.innerHTML=periodLabel()+' · <b style="color:'+c.dark+'">'+ords.length.toLocaleString()+' ออเดอร์</b> · '+pcs.toLocaleString()+' ชิ้น · '+arr.length.toLocaleString()+' รายการสินค้า · ยอดชำระ <b style="color:'+c.dark+'">'+baht(paid)+'</b>'+(br==='H'&&ords.length?' (ปูพื้น LDS/SER '+baht(floorPaid)+' · '+floorOrd+' ออเดอร์)':'');
-      if(!arr.length){listEl.innerHTML='<div style="color:var(--t-muted);font-size:13px;padding:14px 0">ไม่มีออเดอร์ในช่วงที่เลือก</div>';detEl.innerHTML='';st.sel[br]=null;return;}
+      if(!arr.length){listEl.innerHTML='<div style="color:var(--t-muted);font-size:13px;padding:14px 0">ไม่มีออเดอร์ในช่วงที่เลือก</div>';st.sel[br]=null;return;}
       const shown=st.n?arr.slice(0,st.n):arr;
       const max=Math.max(1,shown[0].q);
       listEl.innerHTML=shown.map(p=>{
         const col=isFloor(p.sku)?c.dark:c.light,nm=pname(p.sku);
         return '<div class="r dsxRow'+(st.sel[br]===p.sku?' on':'')+'" data-sku="'+esc(p.sku)+'" title="'+esc(nm)+' ('+esc(p.sku)+')"><div class="dsxTop"><span class="nm">'+esc(nm)+'</span><span class="vn">'+p.q.toLocaleString()+' ชิ้น</span></div><div class="track"><div class="fill" style="width:'+(p.q/max*100)+'%;background:'+col+'"></div></div></div>';
       }).join('')+(shown.length<arr.length?'<div style="font-size:12px;color:var(--t-muted);padding-top:4px">แสดง '+shown.length+' จาก '+arr.length+' รายการ — เลือก "ทั้งหมด" ที่ตัวกรองเพื่อดูครบ</div>':'');
-      const cur=st.sel[br];
-      if(cur&&prod[cur])showDetail(br,prod[cur]);else{st.sel[br]=null;detEl.innerHTML='<div style="font-size:12.5px;color:var(--t-muted);padding:10px 12px;border:1.5px dashed #e5e8ef;border-radius:10px">👆 คลิกที่สินค้าเพื่อดูจำนวนและรายการบิล</div>';}
-          }
-    function showDetail(br,p){
-      const c=BR[br],detEl=document.getElementById('dsxDet'+br);
-      st.sel[br]=p.sku;
-      document.querySelectorAll('#dsxList'+br+' .dsxRow').forEach(r=>r.classList.toggle('on',r.dataset.sku===p.sku));
-      const rows=p.o.slice().sort((a,b)=>b[0].d.localeCompare(a[0].d)||String(b[0].n).localeCompare(String(a[0].n)));
-      detEl.innerHTML='<div style="border:1.5px solid '+c.light+';border-radius:12px;background:#fff;overflow:hidden">'
-        +'<div style="background:'+c.tint+';padding:10px 14px"><div style="font-weight:700;color:'+c.dark+';font-size:13.5px">'+esc(pname(p.sku))+'</div>'
-        +'<div style="font-size:12px;color:var(--t-body);margin-top:2px"><span style="font-family:monospace">'+esc(p.sku)+'</span> · <b>'+p.q.toLocaleString()+' ชิ้น</b> · <b>'+rows.length+' ออเดอร์</b> · '+periodLabel()+'</div></div>'
-        +'<div style="max-height:320px;overflow:auto"><table class="btable"><thead><tr><th>วันที่</th><th>เลขบิล</th><th>ลูกค้า</th><th class="num">จำนวน</th><th class="num">ยอดออเดอร์</th></tr></thead><tbody>'
-        +rows.map(([o,q])=>'<tr><td style="white-space:nowrap">'+thDate(o.d)+'</td><td style="font-family:monospace;white-space:nowrap">'+esc(o.n)+'</td><td class="pname">'+esc(o.c||'—')+(o.s&&o.s!=='จัดส่งแล้ว'?' <span style="font-size:11px;color:#E84878">('+esc(o.s)+')</span>':'')+'</td><td class="num">'+q.toLocaleString()+'</td><td class="num">'+baht(o.p)+'</td></tr>').join('')
-        +'</tbody></table></div></div>';
+      if(cur&&cur.br===br){const np=prod[cur.p.sku];if(np){cur.p=np;fillModalRows();}else closeModal();}
     }
+    // ----- popup รายการบิลของสินค้า -----
+    const modal=document.createElement('div');modal.id='dsxModal';modal.className='dsxm';
+    modal.innerHTML='<div class="dsxm-box" role="dialog" aria-modal="true"><div class="dsxm-head" id="dsxmHead"></div><div class="dsxm-tools"><input id="dsxmSearch" type="text" placeholder="ค้นหา เลขบิล / ชื่อลูกค้า"><span id="dsxmCount"></span></div><div class="dsxm-body" id="dsxmBody"></div></div>';
+    document.body.appendChild(modal);
+    const mInput=modal.querySelector('#dsxmSearch');
+    let cur=null; // {br,p}
+    function fillModalRows(){
+      if(!cur)return;
+      const qy=mInput.value.trim().toLowerCase();
+      const all=cur.p.o.slice().sort((a,b)=>b[0].d.localeCompare(a[0].d)||String(b[0].n).localeCompare(String(a[0].n)));
+      const rows=qy?all.filter(([o])=>String(o.n).toLowerCase().includes(qy)||String(o.c||'').toLowerCase().includes(qy)):all;
+      document.getElementById('dsxmCount').textContent=qy?('พบ '+rows.length+' จาก '+all.length+' ออเดอร์'):(all.length+' ออเดอร์');
+      document.getElementById('dsxmBody').innerHTML=rows.length?'<table class="btable"><thead><tr><th>วันที่</th><th>เลขบิล</th><th>ลูกค้า</th><th class="num">จำนวน (ชิ้น)</th><th class="num">ยอดออเดอร์</th></tr></thead><tbody>'
+        +rows.map(([o,q])=>'<tr><td style="white-space:nowrap">'+thDate(o.d)+'</td><td style="font-family:monospace;white-space:nowrap">'+esc(o.n)+'</td><td class="pname">'+esc(o.c||'—')+(o.s&&o.s!=='จัดส่งแล้ว'?' <span style="font-size:11px;color:#E84878">('+esc(o.s)+')</span>':'')+'</td><td class="num"><b>'+q.toLocaleString()+'</b></td><td class="num">'+baht(o.p)+'</td></tr>').join('')+'</tbody></table>'
+        :'<div style="padding:30px;text-align:center;color:var(--t-muted);font-size:13px">ไม่พบรายการที่ค้นหา</div>';
+    }
+    function openModal(br,p){
+      cur={br,p};st.sel[br]=p.sku;
+      const c=BR[br];
+      document.querySelectorAll('.dsxRow').forEach(r=>r.classList.toggle('on',r.dataset.sku===p.sku&&r.parentNode.id==='dsxList'+br));
+      const head=document.getElementById('dsxmHead');
+      head.style.background=c.tint;
+      head.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><div style="font-size:11.5px;font-weight:700;color:'+c.dark+'">'+(br==='B'?'💙 Bebeplay · LOA_bebeplay':'🐾 Hosttail · LOA_hosttail')+'</div><div style="font-size:16px;font-weight:700;color:var(--t-head);margin-top:3px;line-height:1.35">'+esc(pname(p.sku))+'</div><div style="font-size:11.5px;color:var(--t-muted);margin-top:3px;font-family:monospace">'+esc(p.sku)+'</div></div><button type="button" class="dsxm-x" aria-label="ปิด">✕</button></div>'
+        +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><div class="dsxm-chip"><span>จำนวนที่ขาย</span><b style="color:'+c.dark+'">'+p.q.toLocaleString()+' ชิ้น</b></div><div class="dsxm-chip"><span>จำนวนออเดอร์</span><b style="color:'+c.dark+'">'+p.o.length.toLocaleString()+' ออเดอร์</b></div><div class="dsxm-chip"><span>ช่วงเวลา</span><b>'+esc(periodLabel())+'</b></div></div>';
+      mInput.value='';fillModalRows();
+      modal.classList.add('on');document.body.style.overflow='hidden';
+      document.getElementById('dsxmBody').scrollTop=0;
+    }
+    function closeModal(){cur=null;modal.classList.remove('on');document.body.style.overflow='';st.sel={B:null,H:null};document.querySelectorAll('.dsxRow.on').forEach(r=>r.classList.remove('on'));}
+    modal.addEventListener('click',ev=>{if(ev.target===modal||ev.target.closest('.dsxm-x'))closeModal();});
+    document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&cur)closeModal();});
+    mInput.addEventListener('input',fillModalRows);
     function drawAll(){draw('B');draw('H');}
     ['B','H'].forEach(br=>{
       document.getElementById('dsxList'+br).addEventListener('click',ev=>{
         const row=ev.target.closest('.dsxRow');if(!row)return;
         const prod=document.getElementById('dsxList'+br)._prod;const p=prod&&prod[row.dataset.sku];if(!p)return;
-        showDetail(br,p);
-        const de=document.getElementById('dsxDet'+br);if(de&&de.scrollIntoView&&window.innerWidth<860)de.scrollIntoView({behavior:'smooth',block:'nearest'});
+        openModal(br,p);
       });
     });
     yS.onchange=()=>{st.y=yS.value;fillM();fillD();drawAll();};
