@@ -84,7 +84,7 @@ section.page.on{display:block}
 .bbtrend-mon{font-size:11.5px;font-weight:600;color:var(--t-muted)}
 .tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;margin-left:5px;vertical-align:middle}
 .tag.mint{background:var(--mint-100);color:var(--mint-500)}.tag.amber{background:#FFF1CC;color:#9a6b00}.tag.lav{background:var(--lav-100);color:var(--lav-600)}.tag.blush{background:var(--blush-100);color:var(--blush-500)}
-.chartbox{position:relative;height:330px}
+.chartbox{position:relative;height:330px;overflow:hidden}
 .chartbox.sm{height:270px}.chartbox.chartFull{height:480px}@media(max-width:700px){.chartbox.chartFull{height:360px}}
 .two{grid-template-columns:1fr 1fr}.three{grid-template-columns:1.45fr 1fr}
 @media(max-width:860px){.two,.three{grid-template-columns:1fr}}
@@ -813,7 +813,7 @@ const D={"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","
 
 const baht=v=>'฿'+Math.round(v).toLocaleString();
 const k=v=>v>=1e6?(v/1e6).toFixed(2)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':String(Math.round(v));
-Chart.defaults.font.family="'Prompt','Nunito',sans-serif";Chart.defaults.font.size=11.5;Chart.defaults.color='#718096';
+Chart.defaults.font.family="'Prompt','Nunito',sans-serif";Chart.defaults.font.size=11.5;Chart.defaults.color='#718096';Chart.defaults.maintainAspectRatio=false;
 const ggrid=()=>({grid:{color:'#eef0f4'},ticks:{callback:v=>k(v)}});
 function pctLbl(tot){return {id:'pl'+Math.random().toString(36).slice(2,8),afterDatasetsDraw(c){const ctx=c.ctx,m=c.getDatasetMeta(0);if(!m||!m.data)return;ctx.save();ctx.textAlign='center';ctx.font="700 10px 'Prompt'";m.data.forEach((bar,i)=>{const t=tot[i];if(t==null||t<=0)return;const p=tot[i-1];if(i>0&&p>0){const d=(t-p)/p*100,up=d>=0;ctx.fillStyle=up?'#2EB888':'#E84878';const y=c.scales.y.getPixelForValue(t);ctx.fillText((up?'▲+':'▼')+Math.round(d)+'%',bar.x,Math.max(y-8,11));}});ctx.restore();}};}
 const PALETTE=['#7E68F0','#5AACCF','#2EB888','#FFB17A','#E84878','#7EC8E3','#FFB3C6','#6249D6','#3A90BB','#4ECFA0','#F6A700','#ADE5F9'];
