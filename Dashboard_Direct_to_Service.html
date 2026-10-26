@@ -339,8 +339,8 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
     <div class="card" id="dmSec" style="margin-bottom:18px;padding:18px 20px 16px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:12px">
         <div>
-          <h3 style="margin:0">🧪 ตัวอย่างสินค้า DM00001 → ลูกค้าซื้อ LDS</h3>
-          <div class="desc" style="margin:3px 0 0">ส่งตัวอย่างไปเท่าไหร่ · ผู้รับซื้อบริการปูพื้น (LDS) กี่บิล ยอดเท่าไหร่ · จับคู่ด้วยเบอร์โทร นับเฉพาะออเดอร์หลังวันที่ส่งตัวอย่าง</div>
+          <h3 style="margin:0">🧪 การจัดส่งตัวอย่างสินค้า DM00001 และการสั่งซื้อบริการปูพื้น (LDS)</h3>
+          <div class="desc" style="margin:3px 0 0">ติดตามผลการจัดส่งตัวอย่างสินค้า และการสั่งซื้อ LDS ของผู้รับตัวอย่าง · จับคู่ด้วยหมายเลขโทรศัพท์ และพิจารณาเฉพาะคำสั่งซื้อที่เกิดขึ้นหลังวันที่จัดส่งตัวอย่าง</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12.5px">
           <select id="dmY" class="dmsel"></select>
@@ -348,19 +348,19 @@ footer{text-align:center;color:var(--t-muted);font-size:12px;margin-top:34px}
           <select id="dmD" class="dmsel"></select>
           <div style="position:relative">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="dmSearch" type="text" placeholder="ค้นหา ชื่อ / เบอร์ / เลขบิล" style="font-family:inherit;font-size:12.5px;padding:7px 10px 7px 28px;border-radius:8px;border:1.5px solid #e5e8ef;width:200px">
+            <input id="dmSearch" type="text" placeholder="ค้นหาชื่อผู้รับ / เบอร์โทร / เลขบิล" style="font-family:inherit;font-size:12.5px;padding:7px 10px 7px 28px;border-radius:8px;border:1.5px solid #e5e8ef;width:200px">
           </div>
-          <button id="dmReset" type="button" class="dmsel" style="color:var(--t-muted);border-color:#e5e8ef">รีเซ็ต</button>
+          <button id="dmReset" type="button" class="dmsel" style="color:var(--t-muted);border-color:#e5e8ef">ล้างตัวกรอง</button>
         </div>
       </div>
       <div class="dmKpis">
-        <div class="dmk" style="--c:#7E68F0;--bg:#F4F1FF"><div class="dmk-l">① ตัวอย่างที่ส่ง (DM00001)</div><div class="dmk-v" id="dmK1">—</div><div class="dmk-s" id="dmK1s">—</div></div>
-        <div class="dmk" style="--c:#E8730C;--bg:#FFF4E8"><div class="dmk-l">② LDS ที่ขายได้ จากผู้รับตัวอย่าง</div><div class="dmk-v" id="dmK2">—</div><div class="dmk-s" id="dmK2s">—</div></div>
-        <div class="dmk" style="--c:#2EB888;--bg:#EAFAF3"><div class="dmk-l">③ ยอดขาย LDS</div><div class="dmk-v" id="dmK3">—</div><div class="dmk-s" id="dmK3s">—</div></div>
-        <div class="dmk" style="--c:#3A90BB;--bg:#EAF6FC"><div class="dmk-l">④ คิดเป็น % ของการส่งตัวอย่าง</div><div class="dmk-v" id="dmK4">—</div><div class="dmk-s" id="dmK4s">—</div><div class="dmk-bar"><i id="dmK4b"></i></div></div>
+        <div class="dmk" style="--c:#7E68F0;--bg:#F4F1FF"><div class="dmk-l">จำนวนตัวอย่างที่จัดส่ง</div><div class="dmk-v" id="dmK1">—</div><div class="dmk-s" id="dmK1s">—</div></div>
+        <div class="dmk" style="--c:#E8730C;--bg:#FFF4E8"><div class="dmk-l">คำสั่งซื้อ LDS จากผู้รับตัวอย่าง</div><div class="dmk-v" id="dmK2">—</div><div class="dmk-s" id="dmK2s">—</div></div>
+        <div class="dmk" style="--c:#2EB888;--bg:#EAFAF3"><div class="dmk-l">มูลค่าคำสั่งซื้อ LDS</div><div class="dmk-v" id="dmK3">—</div><div class="dmk-s" id="dmK3s">—</div></div>
+        <div class="dmk" style="--c:#3A90BB;--bg:#EAF6FC"><div class="dmk-l">อัตราการสั่งซื้อ LDS ต่อตัวอย่างที่จัดส่ง</div><div class="dmk-v" id="dmK4">—</div><div class="dmk-s" id="dmK4s">—</div><div class="dmk-bar"><i id="dmK4b"></i></div></div>
       </div>
       <div id="dmTable" style="max-height:340px;overflow:auto;border:1px solid #eef0f4;border-radius:10px;margin-top:14px"></div>
-      <div style="font-size:11.5px;color:var(--t-muted);margin-top:8px">ผู้รับที่ซื้อ = มีออเดอร์ที่มีสินค้า LDS/SER ด้วยเบอร์โทรเดียวกัน ตั้งแต่วันที่ส่งตัวอย่างเป็นต้นไป (ทุกช่องทาง) · ออเดอร์ Shopee/Lazada ที่ระบบซ่อนเบอร์จะจับคู่ไม่ได้ · สินค้า DM00001 ยังไม่มีชื่อในไฟล์สินค้า (คิดราคา ฿50/ชิ้น)</div>
+      <div style="font-size:11.5px;color:var(--t-muted);margin-top:8px"><b>หมายเหตุ:</b> ถือว่าผู้รับตัวอย่าง “สั่งซื้อ LDS” เมื่อมีคำสั่งซื้อสินค้ารหัส LDS/SER ภายใต้หมายเลขโทรศัพท์เดียวกัน ตั้งแต่วันที่จัดส่งตัวอย่างเป็นต้นไป (ทุกช่องทาง) · คำสั่งซื้อจาก Shopee/Lazada ที่ระบบปกปิดหมายเลขโทรศัพท์ไม่สามารถจับคู่ได้ · สินค้า DM00001 ยังไม่ปรากฏชื่อในไฟล์ข้อมูลสินค้า (ราคา ฿50 ต่อชิ้น)</div>
     </div>
     <div class="card" style="margin-bottom:18px">
       <h3>ยอดบริการแยกแบรนด์ × ช่องทาง รายเดือน <span id="sv-sum" style="font-size:13px;color:var(--mint-500);font-weight:700"></span></h3>
@@ -1302,17 +1302,17 @@ function statics(){
       const ldsBills=rows.reduce((s,o)=>s+o.lds.length,0),ldsQty=rows.reduce((s,o)=>s+o.lds.reduce((a,x)=>a+x.qty,0),0),ldsPaid=rows.reduce((s,o)=>s+o.lds.reduce((a,x)=>a+x.paid,0),0);
       const pct=rows.length?buyers.length/rows.length*100:0;
       const set=(id,t)=>{document.getElementById(id).textContent=t;};
-      set('dmK1',sentQty.toLocaleString()+' ชิ้น');set('dmK1s',rows.length+' บิล · '+rows.length+' ผู้รับ · เก็บเงิน '+baht(sentPaid));
-      set('dmK2',ldsBills.toLocaleString()+' บิล');set('dmK2s',ldsQty.toLocaleString()+' ชิ้น LDS · จาก '+buyers.length+' ผู้รับ');
-      set('dmK3',baht(ldsPaid));set('dmK3s',ldsBills?('เฉลี่ย '+baht(ldsPaid/ldsBills)+' ต่อบิล'):'ยังไม่มีผู้รับตัวอย่างซื้อ LDS');
-      set('dmK4',(pct%1?pct.toFixed(1):pct.toFixed(0))+'%');set('dmK4s',buyers.length+' จาก '+rows.length+' ผู้รับตัวอย่างที่ซื้อ LDS');
+      set('dmK1',sentQty.toLocaleString()+' ชิ้น');set('dmK1s',rows.length.toLocaleString()+' บิล · '+rows.length.toLocaleString()+' ราย · มูลค่าที่ชำระ '+baht(sentPaid));
+      set('dmK2',ldsBills.toLocaleString()+' บิล');set('dmK2s','รวม '+ldsQty.toLocaleString()+' ชิ้น · จากผู้รับตัวอย่าง '+buyers.length.toLocaleString()+' ราย');
+      set('dmK3',baht(ldsPaid));set('dmK3s',ldsBills?('เฉลี่ย '+baht(ldsPaid/ldsBills)+' ต่อบิล'):'ยังไม่มีคำสั่งซื้อ LDS จากผู้รับตัวอย่าง');
+      set('dmK4',(pct%1?pct.toFixed(1):pct.toFixed(0))+'%');set('dmK4s','ผู้รับตัวอย่างที่สั่งซื้อ LDS '+buyers.length.toLocaleString()+' จาก '+rows.length.toLocaleString()+' ราย');
       document.getElementById('dmK4b').style.width=Math.min(100,pct)+'%';
       const tb=document.getElementById('dmTable');
-      if(!rows.length){tb.innerHTML='<div style="padding:26px;text-align:center;color:var(--t-muted);font-size:13px">ไม่พบรายการในช่วงที่เลือก</div>';return;}
-      tb.innerHTML='<table class="btable"><thead><tr><th>วันที่ส่ง</th><th>เลขบิล</th><th>ช่องทาง</th><th>ผู้รับ</th><th>เบอร์</th><th>ซื้อ LDS หลังรับตัวอย่าง</th><th>ออเดอร์อื่นหลังรับตัวอย่าง</th></tr></thead><tbody>'
+      if(!rows.length){tb.innerHTML='<div style="padding:26px;text-align:center;color:var(--t-muted);font-size:13px">ไม่พบข้อมูลตามเงื่อนไขที่เลือก</div>';return;}
+      tb.innerHTML='<table class="btable"><thead><tr><th>วันที่จัดส่ง</th><th>เลขบิล</th><th>ช่องทาง</th><th>ผู้รับตัวอย่าง</th><th>เบอร์โทร</th><th>การสั่งซื้อ LDS หลังรับตัวอย่าง</th><th>คำสั่งซื้ออื่นหลังรับตัวอย่าง</th></tr></thead><tbody>'
         +rows.slice().sort((a,b)=>b.d.localeCompare(a.d)||String(b.bill).localeCompare(String(a.bill))).map(o=>{
           const cc=chCol(o.ch);
-          const l=o.lds.length?o.lds.map(x=>'<div><span style="background:#EAFAF3;color:#1F8F68;border-radius:6px;padding:2px 8px;font-weight:700;font-size:11.5px">ซื้อแล้ว '+baht(x.paid)+'</span> <span style="color:var(--t-muted);font-size:11.5px">'+thDate(x.d)+' · บิล '+esc(x.bill)+' · '+x.qty+' ชิ้น</span></div>').join(''):'<span style="background:#F1F3F7;color:#8A94A6;border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:600">ยังไม่ซื้อ</span>';
+          const l=o.lds.length?o.lds.map(x=>'<div><span style="background:#EAFAF3;color:#1F8F68;border-radius:6px;padding:2px 8px;font-weight:700;font-size:11.5px">สั่งซื้อแล้ว '+baht(x.paid)+'</span> <span style="color:var(--t-muted);font-size:11.5px">'+thDate(x.d)+' · บิล '+esc(x.bill)+' · '+x.qty+' ชิ้น</span></div>').join(''):'<span style="background:#F1F3F7;color:#8A94A6;border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:600">ยังไม่มีคำสั่งซื้อ</span>';
           const ot=o.oth.length?o.oth.map(x=>'<div style="font-size:11.5px;color:var(--t-body)">'+thDate(x.d)+' · '+esc(CH[x.ch]||x.ch)+' · บิล '+esc(x.bill)+' · '+baht(x.paid)+'</div>').join(''):'<span style="color:#B5BCC8">—</span>';
           return '<tr><td style="white-space:nowrap">'+thDate(o.d)+'</td><td style="font-family:monospace;white-space:nowrap">'+esc(o.bill)+'</td><td><span style="background:'+cc[0]+';color:'+cc[1]+';border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:700;white-space:nowrap">'+esc(CH[o.ch]||o.ch)+'</span></td><td class="pname">'+esc(o.name||'—')+'</td><td style="font-family:monospace;white-space:nowrap">'+esc(o.phone)+'</td><td>'+l+'</td><td>'+ot+'</td></tr>';
         }).join('')+'</tbody></table>';
