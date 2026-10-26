@@ -85,7 +85,7 @@ section.page.on{display:block}
 .tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;margin-left:5px;vertical-align:middle}
 .tag.mint{background:var(--mint-100);color:var(--mint-500)}.tag.amber{background:#FFF1CC;color:#9a6b00}.tag.lav{background:var(--lav-100);color:var(--lav-600)}.tag.blush{background:var(--blush-100);color:var(--blush-500)}
 .chartbox{position:relative;height:330px}
-.chartbox.sm{height:270px}
+.chartbox.sm{height:270px}.chartbox.chartFull{height:480px}@media(max-width:700px){.chartbox.chartFull{height:360px}}
 .two{grid-template-columns:1fr 1fr}.three{grid-template-columns:1.45fr 1fr}
 @media(max-width:860px){.two,.three{grid-template-columns:1fr}}
 .card h3{font-size:16px;font-weight:600;color:var(--t-head);margin-bottom:3px}
@@ -370,7 +370,7 @@ section.page{margin-top:0}
     <div class="card" style="margin-bottom:18px">
       <h3>ยอดบริการแยกแบรนด์ × ช่องทาง รายเดือน <span id="sv-sum" style="font-size:13px;color:var(--mint-500);font-weight:700"></span></h3>
       <div class="desc">Hosttail = ส้ม · Bebeplay = ฟ้า · <b>เฉดอ่อน = LINE OA · เฉดเข้ม = FB</b> · Event = ม่วง — เส้นประ = เป้า 300K · ตัวเลขเหนือแท่ง = จำนวนบิล · ยอดรวมเดือน · <b>▲▼ % = เทียบเดือนก่อนหน้า</b></div>
-      <div class="chartbox"><canvas id="brandMonthChart"></canvas></div>
+      <div class="chartbox chartFull"><canvas id="brandMonthChart"></canvas></div>
     </div>
     <div class="card" style="margin-bottom:18px">
       <h3>สรุปยอดปูพื้นรายเดือน</h3>
@@ -833,7 +833,7 @@ const TABS=[['overview','📊 ภาพรวม'],['memberschoco','👥 สม�
 const TIME_TABS=new Set(['overview','memberschoco','directsale','target','broadcast']);
 const tabsEl=document.getElementById('tabs');
 TABS.forEach(([id,l])=>{const b=document.createElement('button');b.className='tab'+(id==='overview'?' on':'');const sp=l.indexOf(' ');const ic=document.createElement('span');ic.className='ti';ic.setAttribute('aria-hidden','true');ic.textContent=sp>0?l.slice(0,sp):'';const tx=document.createElement('span');tx.className='tt';tx.textContent=sp>0?l.slice(sp+1):l;b.appendChild(ic);b.appendChild(tx);b.onclick=()=>showTab(id,b);tabsEl.appendChild(b);});
-function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.dataset.tab===id));document.getElementById('filterbar').classList.toggle('hide',!TIME_TABS.has(id));window.scrollTo({top:0,behavior:'smooth'});}
+function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.dataset.tab===id));document.getElementById('filterbar').classList.toggle('hide',!TIME_TABS.has(id));window.scrollTo({top:0,behavior:'smooth'});const rz=()=>Object.values(Chart.instances).forEach(c=>{try{if(c.canvas.offsetParent===null)return;c.stop();c.resize();c.update('none');}catch(e){}});requestAnimationFrame(()=>requestAnimationFrame(rz));setTimeout(rz,120);setTimeout(rz,450);}
 
 // from/to selects
 const fromSel=document.getElementById('fromSel'),toSel=document.getElementById('toSel');
@@ -966,11 +966,11 @@ function render(){
   const billsM=SM.map(m=>FLOOR_ORDERS.filter(o=>o.ym===m).length);
   const billsBy=(ch,i)=>FLOOR_ORDERS.filter(o=>o.ym===SM[i]&&o.chan===ch).length;
   // plugin: total label above each stacked bar
-  const totLbl={id:'totLbl',afterDatasetsDraw(c){const ctx=c.ctx,meta=c.getDatasetMeta(0);if(!meta.data)return;ctx.save();ctx.textAlign='center';meta.data.forEach((bar,i)=>{const t=monthTot[i];if(t<=0)return;const y=c.scales.y.getPixelForValue(t);ctx.font='600 10px Prompt';ctx.fillStyle='#718096';ctx.fillText(billsM[i]+' บิล',bar.x,y-6);ctx.font='700 11px Prompt';ctx.fillStyle='#2D3748';ctx.fillText(k(t),bar.x,y-19);const p=monthTot[i-1];if(i>0&&p>0){const d=(t-p)/p*100,up=d>=0;ctx.font='700 10px Prompt';ctx.fillStyle=up?'#2EB888':'#E84878';ctx.fillText((up?'▲ +':'▼ ')+d.toFixed(0)+'%',bar.x,y-32);}});ctx.restore();}};
+  const totLbl={id:'totLbl',afterDatasetsDraw(c){const ctx=c.ctx,meta=c.getDatasetMeta(0);if(!meta.data)return;ctx.save();ctx.textAlign='center';meta.data.forEach((bar,i)=>{const t=monthTot[i];if(t<=0)return;const y=c.scales.y.getPixelForValue(t);ctx.font='600 11.5px Prompt';ctx.fillStyle='#718096';ctx.fillText(billsM[i]+' บิล',bar.x,y-7);ctx.font='700 14px Prompt';ctx.fillStyle='#2D3748';ctx.fillText(k(t),bar.x,y-23);const p=monthTot[i-1];if(i>0&&p>0){const d=(t-p)/p*100,up=d>=0;ctx.font='700 11.5px Prompt';ctx.fillStyle=up?'#2EB888':'#E84878';ctx.fillText((up?'▲ +':'▼ ')+d.toFixed(0)+'%',bar.x,y-41);}});ctx.restore();}};
   // channel order grouped by brand: Bebeplay (LINE OA อ่อน → FB เข้ม), Hosttail (LINE OA อ่อน → FB เข้ม), Event
   const BORD=["LOA_bebeplay","FB_bebeplay","LOA_hosttail","FB_hosttail","Event Pet Expo","Event BBB"];
   const CHLAB={"FB_hosttail":"FB Hosttail","LOA_hosttail":"LINE OA Hosttail","FB_bebeplay":"FB Bebeplay","LOA_bebeplay":"LINE OA Bebeplay","Event Pet Expo":"Event Pet Expo","Event BBB":"Event BBB"};
-  mk('brandMonthChart',{type:'bar',plugins:[tgtLine,totLbl],data:{labels:SVL,datasets:BORD.map(ch=>({label:CHLAB[ch],data:SM.map(m=>(SVC.chan[m]||{})[ch]||0),backgroundColor:CHANC[ch],borderRadius:3,stack:'s',ch:ch}))},options:{layout:{padding:{top:54}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw)+' · '+billsBy(c.dataset.ch,c.dataIndex)+' บิล',footer:items=>'รวม: '+baht(items.reduce((s,it)=>s+it.raw,0))+' · '+billsM[items[0].dataIndex]+' บิล'}}},scales:{y:{...ggrid(),stacked:true,suggestedMax:Math.max(500000,...monthTot)*1.05},x:{stacked:true,grid:{display:false}}}}});
+  mk('brandMonthChart',{type:'bar',plugins:[tgtLine,totLbl],data:{labels:SVL,datasets:BORD.map(ch=>({label:CHLAB[ch],data:SM.map(m=>(SVC.chan[m]||{})[ch]||0),backgroundColor:CHANC[ch],borderRadius:4,stack:'s',ch:ch,barPercentage:.72,categoryPercentage:.8,maxBarThickness:104}))},options:{layout:{padding:{top:64}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+baht(c.raw)+' · '+billsBy(c.dataset.ch,c.dataIndex)+' บิล',footer:items=>'รวม: '+baht(items.reduce((s,it)=>s+it.raw,0))+' · '+billsM[items[0].dataIndex]+' บิล'}}},scales:{y:{...ggrid(),stacked:true,suggestedMax:Math.max(500000,...monthTot)*1.05},x:{stacked:true,grid:{display:false}}}}});
   const totAll=monthTot.reduce((a,b)=>a+b,0),hAll=bH.reduce((a,b)=>a+b,0),bAll=bB.reduce((a,b)=>a+b,0),eAll=bE.reduce((a,b)=>a+b,0);
   document.getElementById('sv-tot').textContent=baht(totAll);
   document.getElementById('sv-host').textContent=baht(hAll);
