@@ -273,6 +273,11 @@ section.page{margin-top:0}
 .cpAccIn .cpAccB{padding-top:2px}
 .cpAccIn .pkTools{margin-top:14px}
 body.tab-campaign .globalNote{display:none}
+.cpAudRow{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cpXl{font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;background:#1D6F42;border:none;border-radius:10px;padding:9px 16px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(29,111,66,.28);transition:background .15s,transform .15s}
+.cpXl:hover{background:#17593A;transform:translateY(-1px)}
+.cpXl:disabled{opacity:.65;cursor:wait;transform:none}
+.cpXl.sm{padding:7px 13px;font-size:12px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -587,7 +592,7 @@ body.tab-campaign .globalNote{display:none}
         <span class="cpTog"><span class="cpTogT" id="cpTogT">ดูรายละเอียด</span><i class="cpChev" aria-hidden="true">⌄</i></span>
       </button>
       <div class="cpCampB" id="cpCampBody" hidden>
-    <div class="cpAud" style="margin-bottom:18px"><b>กลุ่มเป้าหมาย</b> แชตลูกค้าใน JST ที่มีแท็ก <span class="cpTag">ปูพื้นHosttail</span> และทักครั้งแรกระหว่าง <b>1 มี.ค. – 1 ส.ค. 2026</b> · จับคู่กับบิลขายด้วยบัญชีผู้ซื้อ (รหัสบัญชีแชตเดียวกัน) · ข้อมูลแชตและบิล ณ 26/10/2026</div>
+    <div class="cpAud cpAudRow" style="margin-bottom:18px"><div><b>กลุ่มเป้าหมาย</b> แชตลูกค้าใน JST ที่มีแท็ก <span class="cpTag">ปูพื้นHosttail</span> และทักครั้งแรกระหว่าง <b>1 มี.ค. – 1 ส.ค. 2026</b> · จับคู่กับบิลขายด้วยบัญชีผู้ซื้อ (รหัสบัญชีแชตเดียวกัน) · ข้อมูลแชตและบิล ณ 26/10/2026</div><button type="button" class="cpXl" id="cpExpAll" title="ดาวน์โหลดข้อมูลทั้งหมดของ campaign เป็นไฟล์ Excel (.xlsx)">⬇ Export Excel ทั้งหมด</button></div>
     <div class="grid two cpG" style="margin-bottom:18px">
       <div class="card">
         <h3>แชตที่ทักเข้ามารายเดือน แยกตามสถานะการขาย</h3>
@@ -633,7 +638,7 @@ body.tab-campaign .globalNote{display:none}
           <input id="cpQ" type="text" placeholder="ค้นหาชื่อแชต / รหัสสินค้า / ชื่อสินค้า / เลขบิล / แอดมิน" style="width:340px">
           <select id="cpSort" class="dmsel"><option value="last">เรียง: ทักล่าสุดก่อน</option><option value="first">เรียง: ทักครั้งแรกใหม่ → เก่า</option><option value="paid">เรียง: ยอดชำระมาก → น้อย</option></select>
           <div class="dmtabs" id="cpTabs"></div>
-        </div></div>
+        </div><button type="button" class="cpXl sm" id="cpExpView" title="ดาวน์โหลดรายชื่อที่แสดงอยู่ (ตามแท็บ/ตัวกรอง/คำค้นหา) เป็น Excel">⬇ Export Excel</button></div>
         <div class="dsxm-body" id="cpTable" style="padding:0 8px 4px"></div>
         <div style="text-align:center"><button type="button" id="cpMore" class="dmsel" style="display:none;margin:10px"></button></div>
       </div>
@@ -673,7 +678,7 @@ body.tab-campaign .globalNote{display:none}
         <div class="dsxm-tools"><div class="dsxm-tl">
           <input id="pkQ" type="text" placeholder="ค้นหาเลขบิล / ชื่อแชต / พนักงาน / รหัสสินค้า" style="width:320px">
           <div class="dmtabs" id="pkTabs"></div>
-        </div></div>
+        </div><button type="button" class="cpXl sm" id="pkExpView" title="ดาวน์โหลดรายการบิลที่แสดงอยู่ (ตามแท็บ/ตัวกรอง/คำค้นหา) เป็น Excel">⬇ Export Excel</button></div>
         <div class="dsxm-body" style="padding:0 8px 14px">
           <div style="overflow:auto" id="pkTable"></div>
           <div class="pkStaffBox" style="margin:20px 12px 0">
@@ -1790,6 +1795,7 @@ function statics(){
   (function(){
     const sec=document.getElementById('cpSec');if(!sec)return;
     const listModal=document.getElementById('cpListModal');document.body.appendChild(listModal);
+    let lastPool=[];window.cpExp={getRows:()=>rows,getView:()=>lastPool,period:()=>periodLabel(),seg:()=>st.seg};
     const MNs=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
     const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     const thDate=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'—';
@@ -1886,7 +1892,7 @@ function statics(){
     function drawTable(sc){
       const tabs=[['todo','ยังไม่ขาย LDS',sc.filter(o=>o.seg!=='lds').length],['all','ทั้งหมด',sc.length],['lds','ขาย LDS แล้ว',sc.filter(o=>o.seg==='lds').length],['oth','ซื้อสินค้าอื่น',sc.filter(o=>o.seg==='oth').length],['none','ยังไม่มีบิล',sc.filter(o=>o.seg==='none').length]];
       $('cpTabs').innerHTML=tabs.map(([k,l,n])=>'<button type="button" class="dmtab'+(st.seg===k?' on':'')+'" data-seg="'+k+'">'+l+' <b>'+n+'</b></button>').join('');
-      const pool=sortRows(sc.filter(o=>segOf(o,st.seg)));
+      const pool=sortRows(sc.filter(o=>segOf(o,st.seg)));lastPool=pool;
       $('cpListSub').textContent='ช่วงที่ทัก: '+periodLabel()+' · '+pool.length.toLocaleString()+' แชต'+(st.q.trim()?' ที่ตรงกับคำค้นหา':'');
       if(!pool.length){$('cpTable').innerHTML='<div style="padding:34px;text-align:center;color:var(--t-muted);font-size:13px">ไม่พบข้อมูลตามเงื่อนไขที่เลือก</div>';$('cpMore').style.display='none';return;}
       const shown=pool.slice(0,st.limit);
@@ -1950,6 +1956,42 @@ function statics(){
 
 
 
+
+  // ---- campaign: Export Excel (.xlsx) ----
+  (function(){
+    const bAll=document.getElementById('cpExpAll');if(!bAll)return;
+    const thDate=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
+    const stf=s=>{s=String(s||'').trim();if(!s)return '';return s.replace(/@.*$/,'').split(/[.\s]+/).filter(Boolean).map(w=>w.length===1?w.toUpperCase()+'.':w[0].toUpperCase()+w.slice(1)).join(' ');};
+    const CHN={F:'Facebook',I:'Instagram',L:'LINE',Z:'Lazada',X:'อื่น ๆ'};
+    const SEGN={lds:'ขาย LDS แล้ว',oth:'ซื้อสินค้าอื่น',none:'ยังไม่มีบิล'};
+    const CLSN={ok:'ใช้สิทธิ์โปรถูกต้อง',bad:'ราคาโปรแต่ไม่มีสิทธิ์',normal:'ราคาปกติ ฿1,450',chk:'ต้องตรวจสอบเพิ่มเติม'};
+    const isL=s=>/^LDS/.test(s);
+    const d0=new Date(),ymd=d0.getFullYear()+String(d0.getMonth()+1).padStart(2,'0')+String(d0.getDate()).padStart(2,'0');
+    const loadX=()=>window.XLSX?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=()=>rej(new Error('load'));document.head.appendChild(s);});
+    const chatRows=l=>l.map(o=>({'วันที่ทักครั้งแรก':thDate(o.d),'ชื่อแชตลูกค้า':o.n,'ช่องทาง':CHN[o.p]||'อื่น ๆ','แอดมินที่ดูแล':o.a?'Admin_'+o.a:'','สถานะ':SEGN[o.seg],'จำนวนบิล':o.b.length,'ยอดชำระรวมทุกบิล (฿)':o.allPaid,'ยอดชำระบิลที่มี LDS (฿)':o.ldsPaid,'เลขบิล':o.b.map(b=>b[0]).join(', '),'รหัสสินค้าที่ซื้อ':[...new Set(o.b.flatMap(b=>b[6].map(x=>x[0])))].join(', '),'ป้ายแท็ก':o.t.join(', '),'ทักล่าสุด':thDate(o.l)}));
+    const billRows=l=>{const r=[];l.forEach(o=>o.b.forEach(b=>{const base={'ชื่อแชตลูกค้า':o.n,'วันที่ทักครั้งแรก':thDate(o.d),'ช่องทาง':CHN[o.p]||'อื่น ๆ','แอดมินที่ดูแล':o.a?'Admin_'+o.a:'','สถานะแชต':SEGN[o.seg],'เลขบิล':b[0],'วันที่ชำระ':thDate(b[1]),'สถานะบิล':b[3],'ช่องทางสั่งซื้อ':b[2],'พนักงานที่เปิดบิล':stf(b[5])};
+      const its=b[6].length?b[6]:[null];its.forEach((it,i)=>r.push(Object.assign({},base,{'รหัสสินค้า':it?it[0]:'','ชื่อสินค้า':it?(CAMP_PN[it[0]]||''):'','จำนวน':it?it[1]:'','เป็นสินค้า LDS':it&&isL(it[0])?'ใช่':'','ยอดชำระรวมของบิล (฿) *':i===0?b[4]:''})));}));return r;};
+    const priceRows=l=>l.map(o=>({'วันที่ชำระ':thDate(o.d),'เลขบิล':o.b,'ชื่อแชตลูกค้า':o.c,'ช่องทางสั่งซื้อ':o.st,'สถานะบิล':o.ss,'พนักงานที่เปิดบิล':stf(o.u),'รหัสสินค้า × จำนวน':o.it.map(x=>x[0]+' ×'+x[1]).join(', '),'จำนวน Rollsafe 0.8 (ตร.ม.)':o.q,'ยอดสินค้ารวม (฿)':o.tot,'ส่วนลดร้านค้า (฿)':o.disc,'ยอดสินค้าหลังส่วนลด (฿)':o.pr,'ราคาต่อตร.ม. (ประมาณ)':Math.round(o.avg),'อยู่ในกลุ่มสิทธิ์':o.el?'ใช่':'ไม่ใช่','ทักครั้งแรก':thDate(o.cd),'ช่วงเวลา':o.camp?'ช่วง campaign':'ก่อน campaign','ผลการตรวจ':CLSN[o.cls],'ส่วนต่างที่เสียไป (฿) ประมาณ':Math.round(o.lost)}));
+    const adminRows=l=>{const g={};l.forEach(o=>{const k=o.a?'Admin_'+o.a:'ไม่ระบุแอดมิน';const x=g[k]=g[k]||{n:0,l:0,o:0,z:0};x.n++;x[o.seg==='lds'?'l':o.seg==='oth'?'o':'z']++;});return Object.entries(g).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>({'แอดมิน':k,'แชตทั้งหมด':v.n,'ขาย LDS แล้ว':v.l,'ซื้อสินค้าอื่น':v.o,'ยังไม่มีบิล':v.z,'% ขาย LDS':v.n?Math.round(v.l/v.n*1000)/10:0}));};
+    const staffRows=l=>{const g={};l.forEach(o=>{const k=stf(o.u);const x=g[k]=g[k]||{n:0,q:0,ok:0,bad:0,nm:0,ck:0,lost:0};x.n++;x.q+=o.q;x.lost+=o.lost;x[o.cls==='ok'?'ok':o.cls==='bad'?'bad':o.cls==='normal'?'nm':'ck']++;});return Object.entries(g).sort((a,b)=>b[1].bad-a[1].bad||b[1].n-a[1].n).map(([k,v])=>({'พนักงานที่เปิดบิล':k,'บิล Rollsafe 0.8':v.n,'ตร.ม.':v.q,'ใช้สิทธิ์โปรถูกต้อง':v.ok,'ราคาโปรแต่ไม่มีสิทธิ์':v.bad,'ราคาปกติ':v.nm,'ต้องตรวจสอบ':v.ck,'ส่วนต่างที่เสียไป (฿) ประมาณ':Math.round(v.lost)}));};
+    function sheet(X,rows){const r=rows.length?rows:[{'หมายเหตุ':'ไม่มีข้อมูลตามเงื่อนไขที่เลือก'}];const ws=X.utils.json_to_sheet(r);const keys=Object.keys(r[0]);ws['!cols']=keys.map(k=>({wch:Math.min(60,Math.max(String(k).length*1.3,...r.slice(0,300).map(x=>String(x[k]==null?'':x[k]).length))+2)}));return ws;}
+    function save(name,sheets){return loadX().then(()=>{const X=window.XLSX,wb=X.utils.book_new();sheets.forEach(([n,rows,aoa])=>X.utils.book_append_sheet(wb,aoa?X.utils.aoa_to_sheet(aoa):sheet(X,rows),n));X.writeFile(wb,name);});}
+    function run(btn,fn){const t=btn.textContent;btn.disabled=true;btn.textContent='กำลังสร้างไฟล์…';Promise.resolve().then(fn).then(()=>{btn.textContent='ดาวน์โหลดแล้ว ✓';setTimeout(()=>{btn.textContent=t;btn.disabled=false;},2000);}).catch(()=>{btn.textContent='สร้างไฟล์ไม่สำเร็จ — ตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง';setTimeout(()=>{btn.textContent=t;btn.disabled=false;},3500);});}
+    bAll.addEventListener('click',()=>run(bAll,()=>{
+      const rows=cpExp.getRows(),pr=pkExp.getRows();
+      const cnt=k=>rows.filter(o=>o.seg===k).length,ldsB=rows.reduce((s,o)=>s+o.ld.length,0),ldsP=rows.filter(o=>o.seg==='lds').reduce((s,o)=>s+o.ldsPaid,0);
+      const sum=[['campaign','Promotion Rollsafe 0.8 — ฿1,200 / ตารางเมตร (ราคาปกติ ฿1,450)'],['ระยะเวลา campaign','1 พ.ย. – 31 ธ.ค. 2026'],['กลุ่มเป้าหมาย','แชต JST ที่มีแท็ก ปูพื้นHosttail และทักครั้งแรก 1 มี.ค. – 1 ส.ค. 2026'],['ข้อมูล ณ วันที่','26/10/2026'],['วันที่ export',thDate(d0.getFullYear()+'-'+String(d0.getMonth()+1).padStart(2,'0')+'-'+String(d0.getDate()).padStart(2,'0'))],[],
+        ['แชตกลุ่มเป้าหมายทั้งหมด',rows.length],['ขาย LDS แล้ว (ราย)',cnt('lds')],['  จำนวนบิลที่มี LDS',ldsB],['  ยอดชำระของบิลที่มี LDS (฿)',ldsP],['ซื้อสินค้าอื่น (ยังไม่มี LDS)',cnt('oth')],['ยังไม่มีบิล',cnt('none')],['ยังไม่ขาย LDS (กลุ่มส่ง campaign)',cnt('oth')+cnt('none')],[],
+        ['บิล Rollsafe 0.8 ทั้งหมด',pr.length],['  ใช้สิทธิ์โปรถูกต้อง',pr.filter(o=>o.cls==='ok').length],['  ราคาโปรแต่ไม่มีสิทธิ์',pr.filter(o=>o.cls==='bad').length],['  ราคาปกติ ฿1,450',pr.filter(o=>o.cls==='normal').length],['  ต้องตรวจสอบเพิ่มเติม',pr.filter(o=>o.cls==='chk').length],[],
+        ['หมายเหตุ','ถือว่า “ขาย LDS แล้ว” เมื่อพบบิลที่มีสินค้ารหัส LDS ของบัญชีผู้ซื้อเดียวกัน · ราคาต่อตร.ม. เป็นค่าประมาณจากยอดระดับบิล · * ยอดชำระรวมของบิลแสดงที่แถวแรกของแต่ละบิลเท่านั้น (ไม่นับซ้ำ)']];
+      return save('campaign_Rollsafe0.8_'+ymd+'.xlsx',[['สรุป',null,sum],['รายชื่อแชตทั้งหมด',chatRows(rows)],['ยังไม่ขาย LDS',chatRows(rows.filter(o=>o.seg!=='lds'))],['รายการบิล',billRows(rows)],['สรุปตามแอดมิน',adminRows(rows)],['ตรวจสิทธิ์ราคาโปร',priceRows(pr)],['สรุปตามพนักงาน',staffRows(pr)]]);
+    }));
+    const bV=document.getElementById('cpExpView');
+    if(bV)bV.addEventListener('click',()=>run(bV,()=>{const v=cpExp.getView();return save('campaign_chat_list_'+ymd+'.xlsx',[['รายชื่อแชต',chatRows(v)],['รายการบิล',billRows(v)]]);}));
+    const bP=document.getElementById('pkExpView');
+    if(bP)bP.addEventListener('click',()=>run(bP,()=>{const v=pkExp.getView();return save('campaign_price_check_'+ymd+'.xlsx',[['ตรวจสิทธิ์ราคาโปร',priceRows(v)],['สรุปตามพนักงาน',staffRows(v)]]);}));
+  })();
+
   // ---- campaign: หุบ/ขยายรายละเอียดของ campaign + สรุปย่อบนหัว campaign ----
   (function(){
     document.querySelectorAll('.cpAcc').forEach(a=>{const hb=a.querySelector(':scope>.cpAccH'),bd=a.querySelector(':scope>.cpAccB'),tx=hb.querySelector('.cpTogT');const closed=tx.textContent;const set=o=>{if(o)bd.removeAttribute('hidden');else bd.setAttribute('hidden','');a.classList.toggle('open',o);hb.setAttribute('aria-expanded',o?'true':'false');tx.textContent=o?'ซ่อน':closed;};hb.addEventListener('click',()=>set(bd.hasAttribute('hidden')));a._set=set;});
@@ -1974,6 +2016,7 @@ function statics(){
   (function(){
     const sec=document.getElementById('pkSec');if(!sec)return;
     const listM=document.getElementById('pkListModal');document.body.appendChild(listM);
+    let lastPk=[];window.pkExp={getRows:()=>rows,getView:()=>lastPk};
     const $=id=>document.getElementById(id);
     const MNs=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
     const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2034,7 +2077,7 @@ function statics(){
     function drawTable(sc){
       const tabs=[['all','ทั้งหมด',sc.length],['ok',CLS.ok[0],sc.filter(o=>o.cls==='ok').length],['bad',CLS.bad[0],sc.filter(o=>o.cls==='bad').length],['normal',CLS.normal[0],sc.filter(o=>o.cls==='normal').length],['chk',CLS.chk[0],sc.filter(o=>o.cls==='chk').length]];
       $('pkTabs').innerHTML=tabs.map(([k,l,c])=>'<button type="button" class="dmtab'+(st.cls===k?' on':'')+'" data-c="'+k+'">'+l+' <b>'+c+'</b></button>').join('');
-      const pool=sc.filter(o=>st.cls==='all'||o.cls===st.cls);
+      const pool=sc.filter(o=>st.cls==='all'||o.cls===st.cls);lastPk=pool;
       if(!pool.length){$('pkTable').innerHTML='<div style="padding:30px;text-align:center;color:var(--t-muted);font-size:13px">ไม่พบบิลตามเงื่อนไขที่เลือก</div>';return;}
       $('pkTable').innerHTML='<table class="btable cpTb"><thead><tr><th>วันที่ชำระ</th><th>เลขบิล</th><th>ชื่อแชตลูกค้า</th><th>พนักงานที่เปิดบิล</th><th class="num">ตร.ม.</th><th class="num">ราคา/ตร.ม.</th><th>สิทธิ์โปร</th><th>ผลการตรวจ</th><th></th></tr></thead><tbody>'
         +pool.map((o,i)=>'<tr class="cpRow" data-b="'+esc(o.b)+'" role="button" tabindex="0" title="คลิกเพื่อดูรายละเอียดบิล"><td style="white-space:nowrap">'+thDate(o.d)+(o.camp?' <span class="cpSt" style="background:#E3F8EA;color:#15803D">ช่วง campaign</span>':'')+'</td><td style="font-family:monospace">'+esc(o.b)+chipBst(o)+'</td><td class="pname">'+esc(o.c||'—')+'</td><td style="white-space:nowrap">'+esc(stf(o.u))+'</td><td class="num">'+o.q+'</td><td class="num" style="white-space:nowrap;font-weight:700;color:'+(o.cls==='bad'?'#B42318':'var(--t-head)')+'">'+(o.kind==='mixed'?'~':'')+baht0(o.avg)+'</td><td style="white-space:nowrap">'+(o.el?'<span style="color:#1F8F68;font-weight:700">มีสิทธิ์</span>':'<span style="color:#8A94A6">ไม่มีสิทธิ์</span>')+'</td><td>'+pill(o.cls)+'</td><td><i class="go" aria-hidden="true">›</i></td></tr>').join('')+'</tbody></table>';
